@@ -13,6 +13,7 @@ import org.apache.uima.collection.CollectionReader;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.unihamburg.informatik.nlp4web.tutorial.reader.WebReader;
 import de.unihamburg.informatik.nlp4web.tutorial.writer.WebWriter;
