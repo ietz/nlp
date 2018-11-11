@@ -1,0 +1,8 @@
+1. PoS Tagger:
+Tags the tokens in the document with Penn Treebank PoS labels. It seems to be correct in most cases. I would have expected "such" to be labeled as an ADV and not an ADJ, however.
+
+2. Lemmatizer:
+All the tokens in the input are reduced to their lemma. Tokens that are not usually capitalized are lowercased, plural forms are reduced to the singular forms. It works in most cases. However, sillier is not correctly lemmatized to silly (my guess is, that the lemmatizer does not know the word form "sillier").
+
+3. Chunking
+The input data is chunked into verb and noun phrases, which is a simplified form of parsing the sentence. Noun phrases are recursively reduced until only one constituent is left.

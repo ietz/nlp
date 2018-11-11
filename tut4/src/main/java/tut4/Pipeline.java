@@ -57,9 +57,9 @@ public class Pipeline
         		lem,
         		parse,
         		hearst,
-        		// posWriter,
-        		// lemmaWriter,
-        		// chunkWriter,
+        		//posWriter
+        		//lemmaWriter
+        		 //chunkWriter
 				heastWriter
         );
     }
