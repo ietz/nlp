@@ -43,7 +43,7 @@ public class Pipeline
         // Also better start with not too much text to process.
     	AnalysisEngine parse = createEngine(StanfordParser.class);
     	
-    	AnalysisEngine heast = createEngine(HearstAnnotator.class);
+    	AnalysisEngine hearst = createEngine(HearstAnnotator.class);
     	
     	AnalysisEngine posWriter = createEngine(POSWriter.class);
     	AnalysisEngine lemmaWriter = createEngine(LemmaWriter.class);
@@ -56,7 +56,7 @@ public class Pipeline
                 pos,
         		lem,
         		parse,
-        		heast,
+        		hearst,
         		// posWriter,
         		// lemmaWriter,
         		// chunkWriter,

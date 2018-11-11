@@ -15,14 +15,14 @@ public class MultiMatcher {
 		this.jCas = jCas;
 	}
 
-
+	// creates a matcher for a certain type of Hearst Pattern
 	public Matcher forType(String typeOf) {
 		Matcher matcher = new Matcher(jCas, typeOf);
 		this.matchers.add(matcher);
 		return matcher;
 	}
 
-
+	// returns all the matches
 	public List<Match> getAllMatches() {
 		return matchers.stream()
 				.flatMap(m -> m.getMatches().stream())

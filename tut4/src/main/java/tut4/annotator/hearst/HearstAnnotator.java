@@ -12,12 +12,12 @@ public class HearstAnnotator extends JCasAnnotator_ImplBase {
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		MultiMatcher m = new MultiMatcher(aJCas);
-		m.forType("1").select(Match.Type.HYPERONYM).skipPunctuation().read("such", "as").select(Match.Type.HYPONYM);
-		m.forType("2").read("such").select(Match.Type.HYPERONYM).read("as").select(Match.Type.HYPONYM);
-		m.forType("3").select(Match.Type.HYPONYM).skipPunctuation().read("and", "other").select(Match.Type.HYPERONYM);
-		m.forType("3").select(Match.Type.HYPONYM).skipPunctuation().read("or", "other").select(Match.Type.HYPERONYM);
-		m.forType("4").select(Match.Type.HYPERONYM).read(",", "including").select(Match.Type.HYPONYM);
-		m.forType("5").select(Match.Type.HYPERONYM).read(",", "especially").select(Match.Type.HYPONYM);
+		m.forType("NP_such_as_NP").select(Match.Type.HYPERONYM).skipPunctuation().read("such", "as").select(Match.Type.HYPONYM);
+		m.forType("such_NP_as_NP").read("such").select(Match.Type.HYPERONYM).read("as").select(Match.Type.HYPONYM);
+		m.forType("and/or_other").select(Match.Type.HYPONYM).skipPunctuation().read("and", "other").select(Match.Type.HYPERONYM);
+		m.forType("and/or_other").select(Match.Type.HYPONYM).skipPunctuation().read("or", "other").select(Match.Type.HYPERONYM);
+		m.forType("NP_including_NP").select(Match.Type.HYPERONYM).read(",", "including").select(Match.Type.HYPONYM);
+		m.forType("NP_especiall_NP").select(Match.Type.HYPERONYM).read(",", "especially").select(Match.Type.HYPONYM);
 
 		for (Match match : m.getAllMatches()) {
 			annotateHyponyms(aJCas, match);
