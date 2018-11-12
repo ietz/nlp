@@ -18,7 +18,7 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import tut4.annotator.hearst.HearstAnnotator;
 import tut4.reader.TextReader;
 import tut4.writer.ChunkWriter;
-import tut4.writer.HeastWriter;
+import tut4.writer.HearstWriter;
 import tut4.writer.LemmaWriter;
 import tut4.writer.POSWriter;
 
@@ -48,7 +48,7 @@ public class Pipeline
     	AnalysisEngine posWriter = createEngine(POSWriter.class);
     	AnalysisEngine lemmaWriter = createEngine(LemmaWriter.class);
     	AnalysisEngine chunkWriter = createEngine(ChunkWriter.class);
-		AnalysisEngine heastWriter = createEngine(HeastWriter.class);
+		AnalysisEngine hearstWriter = createEngine(HearstWriter.class);
     	
         SimplePipeline.runPipeline(
         		reader,
@@ -57,10 +57,10 @@ public class Pipeline
         		lem,
         		parse,
         		hearst,
-        		//posWriter
-        		//lemmaWriter
-        		 //chunkWriter
-				heastWriter
+        		//posWriter,
+        		//lemmaWriter,
+				//chunkWriter,
+				hearstWriter
         );
     }
 }
