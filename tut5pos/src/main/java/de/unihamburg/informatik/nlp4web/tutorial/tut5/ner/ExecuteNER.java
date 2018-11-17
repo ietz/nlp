@@ -14,7 +14,6 @@ import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
 import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
-import org.cleartk.ml.mallet.MalletCrfStringOutcomeDataWriter;
 import org.cleartk.util.cr.FilesCollectionReader;
 
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
@@ -42,9 +41,9 @@ public class ExecuteNER {
         org.cleartk.ml.jar.Train.main(modelDirectory);
 
     }
-    
+
     //NOTE: The pipeline do not include the output writer. you SHOULD write a consumer which extract the predicted Named entities. You can compute then the scores accordingly
-    
+
     public static void classifyTestFile(String modelDirectory, File testPosFile, String language)
             throws ResourceInitializationException, UIMAException, IOException {
         runPipeline(
@@ -55,8 +54,8 @@ public class ExecuteNER {
                 createEngine(NERAnnotator.class, NERAnnotator.PARAM_FEATURE_EXTRACTION_FILE,
                         "src/main/resources/feature/features.xml",
                         GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
-                createEngine(AnalyzeFeatures.class, AnalyzeFeatures.PARAM_INPUT_FILE, testPosFile.getAbsolutePath(),
-                        AnalyzeFeatures.PARAM_TOKEN_VALUE_PATH, "NEIOB/PosValue"));
+                createEngine(ScoreNER.class)
+        );
     }
 
     public static void main(String[] args) throws Exception {
