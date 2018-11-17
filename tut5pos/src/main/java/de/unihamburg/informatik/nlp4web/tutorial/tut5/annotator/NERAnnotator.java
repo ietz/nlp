@@ -21,12 +21,8 @@ import org.cleartk.ml.feature.extractor.CleartkExtractor.Preceding;
 import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
 import org.cleartk.ml.feature.extractor.FeatureExtractor1;
 import org.cleartk.ml.feature.extractor.TypePathExtractor;
-import org.cleartk.ml.feature.function.CapitalTypeFeatureFunction;
-import org.cleartk.ml.feature.function.CharacterNgramFeatureFunction;
+import org.cleartk.ml.feature.function.*;
 import org.cleartk.ml.feature.function.CharacterNgramFeatureFunction.Orientation;
-import org.cleartk.ml.feature.function.FeatureFunctionExtractor;
-import org.cleartk.ml.feature.function.LowerCaseFeatureFunction;
-import org.cleartk.ml.feature.function.NumericTypeFeatureFunction;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -48,12 +44,7 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
     @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTION_FILE, mandatory = false)
     private String featureExtractionFile = null;
 
-    private FeatureExtractor1<Token> tokenFeatureExtractor;
-
-    private CleartkExtractor<Token, Token> contextFeatureExtractor;
-    private TypePathExtractor<Token> stemExtractor;
-
-    List<FeatureExtractor1<Token>> features = new ArrayList<>();
+    private List<FeatureExtractor1<Token>> features = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
     @Override
@@ -63,16 +54,16 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
         if (featureExtractionFile == null) {
             CharacterNgramFeatureFunction.Orientation fromRight = Orientation.RIGHT_TO_LEFT;
 
-            stemExtractor = new TypePathExtractor<Token>(Token.class, "stem/value");
+            TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
 
-            this.tokenFeatureExtractor = new FeatureFunctionExtractor<Token>(new CoveredTextExtractor<Token>(),
+            FeatureExtractor1<Token> tokenFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
                     new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
                     new CharacterNgramFeatureFunction(fromRight, 0, 2));
 
-            this.contextFeatureExtractor = new CleartkExtractor<Token, Token>(Token.class,
-                    new CoveredTextExtractor<Token>(), new Preceding(2), new Following(2));
+            CleartkExtractor<Token, Token> contextFeatureExtractor = new CleartkExtractor<>(Token.class,
+                    tokenFeatureExtractor, new Preceding(2), new Following(2));
 
-            features.add(new FeatureFunctionExtractor<Token>(new PersonNameExtractor(new File("src/main/resources/ner/name.list"))));
+            features.add(new FeatureFunctionExtractor<>(new PersonNameExtractor(new File("src/main/resources/ner/deu.list"))));
             
             features.add(stemExtractor);
             features.add(tokenFeatureExtractor);
@@ -90,11 +81,11 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
         for (Sentence sentence : select(jCas, Sentence.class)) {
-            List<Instance<String>> instances = new ArrayList<Instance<String>>();
+            List<Instance<String>> instances = new ArrayList<>();
             List<Token> tokens = selectCovered(jCas, Token.class, sentence);
             for (Token token : tokens) {
 
-                Instance<String> instance = new Instance<String>();
+                Instance<String> instance = new Instance<>();
 
                 for (FeatureExtractor1<Token> extractor : this.features) {
                     if (extractor instanceof CleartkExtractor) {
@@ -109,6 +100,7 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                     NEIOBAnnotation goldNE = JCasUtil.selectCovered(jCas, NEIOBAnnotation.class, token).get(0);
                     instance.setOutcome(goldNE.getGoldValue());
                 }
+
                 // add the instance to the list !!!
                 instances.add(instance);
             }

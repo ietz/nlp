@@ -22,7 +22,7 @@ public class PersonNameExtractor implements NamedFeatureExtractor1<Token> {
     private final Map<String, String> neToTag = new HashMap<>();
 
     public PersonNameExtractor(File nerList) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(nerList));) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(nerList))) {
             String line;
 
             while ((line = reader.readLine()) != null) {

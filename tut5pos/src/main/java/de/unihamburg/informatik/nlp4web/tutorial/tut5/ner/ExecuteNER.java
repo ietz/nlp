@@ -14,6 +14,7 @@ import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
 import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
+import org.cleartk.ml.mallet.MalletCrfStringOutcomeDataWriter;
 import org.cleartk.util.cr.FilesCollectionReader;
 
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
@@ -53,19 +54,18 @@ public class ExecuteNER {
                 createEngine(SnowballStemmer.class, SnowballStemmer.PARAM_LANGUAGE, language),
                 createEngine(NERAnnotator.class, NERAnnotator.PARAM_FEATURE_EXTRACTION_FILE,
                         "src/main/resources/feature/features.xml",
-                        GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar")
-                /*, TODO: replace this with your NER consumer
+                        GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
                 createEngine(AnalyzeFeatures.class, AnalyzeFeatures.PARAM_INPUT_FILE, testPosFile.getAbsolutePath(),
-                        AnalyzeFeatures.PARAM_TOKEN_VALUE_PATH, "pos/PosValue")*/);
+                        AnalyzeFeatures.PARAM_TOKEN_VALUE_PATH, "NEIOB/PosValue"));
     }
 
     public static void main(String[] args) throws Exception {
 
         long start = System.currentTimeMillis();
         String modelDirectory = "src/test/resources/model/";
-        String language = "en";
-        File nerTrain = new File("src/main/resources/ner/ner_eng.train");
-        File nerTest = new File("src/main/resources/ner/ner_eng.dev");
+        String language = "de";
+        File nerTrain = new File("src/main/resources/ner/ner_deu.train");
+        File nerTest = new File("src/main/resources/ner/ner_deu.dev");
         new File(modelDirectory).mkdirs();
         writeModel(nerTrain, modelDirectory, language);
         trainModel(modelDirectory);
