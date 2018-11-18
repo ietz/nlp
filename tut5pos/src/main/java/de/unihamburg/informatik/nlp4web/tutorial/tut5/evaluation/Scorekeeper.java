@@ -56,8 +56,6 @@ public class Scorekeeper<T> {
 				fmeasureSum += fmeasure;
 			}
 
-			logger.log(Level.INFO, String.format("%s: %f %f %f", e.getKey(), tp, fp, fn));
-
 			cscores.addRow(
 					e.getKey(),
 					String.format("%.04f", precision),

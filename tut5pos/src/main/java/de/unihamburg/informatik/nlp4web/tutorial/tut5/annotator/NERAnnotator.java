@@ -1,80 +1,55 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator;
 
+import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.KnownNeExtractor;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.KnownNEAnnotation;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.ml.CleartkSequenceAnnotator;
 import org.cleartk.ml.Instance;
-import org.cleartk.ml.feature.extractor.CleartkExtractor;
+import org.cleartk.ml.feature.extractor.*;
 import org.cleartk.ml.feature.extractor.CleartkExtractor.Following;
 import org.cleartk.ml.feature.extractor.CleartkExtractor.Preceding;
-import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
-import org.cleartk.ml.feature.extractor.FeatureExtractor1;
-import org.cleartk.ml.feature.extractor.TypePathExtractor;
 import org.cleartk.ml.feature.function.*;
 import org.cleartk.ml.feature.function.CharacterNgramFeatureFunction.Orientation;
 
-import com.thoughtworks.xstream.XStream;
-
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.PersonNameExtractor;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.NEIOBAnnotation;
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.xml.XStreamFactory;
 
 
 public class NERAnnotator extends CleartkSequenceAnnotator<String> {
 
-    public static final String PARAM_FEATURE_EXTRACTION_FILE = "FeatureExtractionFile";
-
-    /**
-     * if a feature extraction/context extractor filename is given the xml file
-     * is parsed and the features are used, otherwise it will not be used
-     */
-    @ConfigurationParameter(name = PARAM_FEATURE_EXTRACTION_FILE, mandatory = false)
-    private String featureExtractionFile = null;
-
     private List<FeatureExtractor1<Token>> features = new ArrayList<>();
+    private FeatureExtractor2<Token, KnownNEAnnotation> kneExtractor;
 
     @SuppressWarnings("unchecked")
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
-        // add feature extractors
-        if (featureExtractionFile == null) {
-            CharacterNgramFeatureFunction.Orientation fromRight = Orientation.RIGHT_TO_LEFT;
 
-            TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
+        TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
 
-            FeatureExtractor1<Token> tokenFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
-                    new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
-                    new CharacterNgramFeatureFunction(fromRight, 0, 2));
+        FeatureExtractor1<Token> tokenFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
+                new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
+                new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 2));
 
-            CleartkExtractor<Token, Token> contextFeatureExtractor = new CleartkExtractor<>(Token.class,
-                    tokenFeatureExtractor, new Preceding(2), new Following(2));
+        CleartkExtractor<Token, Token> contextFeatureExtractor = new CleartkExtractor<>(Token.class,
+                tokenFeatureExtractor, new Preceding(2), new Following(2));
 
-            features.add(new FeatureFunctionExtractor<>(new PersonNameExtractor(new File("src/main/resources/ner/deu.list"))));
-            
-            features.add(stemExtractor);
-            features.add(tokenFeatureExtractor);
-            features.add(contextFeatureExtractor);
+        features.add(stemExtractor);
+        features.add(tokenFeatureExtractor);
+        features.add(contextFeatureExtractor);
 
-        } else {// load the settings from a file
-                // initialize the XStream if a xml file is given:
-            XStream xstream = XStreamFactory.createXStream();
-            features = (List<FeatureExtractor1<Token>>) xstream.fromXML(new File(featureExtractionFile));
-        }
-
+        kneExtractor = new KnownNeExtractor();
     }
 
     @SuppressWarnings("unchecked")
@@ -83,6 +58,8 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
         for (Sentence sentence : select(jCas, Sentence.class)) {
             List<Instance<String>> instances = new ArrayList<>();
             List<Token> tokens = selectCovered(jCas, Token.class, sentence);
+            Map<Token, Collection<KnownNEAnnotation>> kneIndex = indexCovering(jCas, Token.class, KnownNEAnnotation.class);
+
             for (Token token : tokens) {
 
                 Instance<String> instance = new Instance<>();
@@ -94,6 +71,10 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                     } else {
                         instance.addAll(extractor.extract(jCas, token));
                     }
+                }
+
+                for (KnownNEAnnotation kne : kneIndex.getOrDefault(token, Collections.emptyList())) {
+                    instance.addAll(kneExtractor.extract(jCas, token, kne));
                 }
 
                 if (this.isTraining()) {

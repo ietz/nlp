@@ -6,6 +6,7 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import java.io.File;
 import java.io.IOException;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne.KnownNEAnnotator;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.resource.ResourceInitializationException;
@@ -30,11 +31,13 @@ public class ExecuteNER {
                         NERReader.CONLL_VIEW, posTagFile.getName()),
                 createEngine(NERReader.class),
                 createEngine(SnowballStemmer.class, SnowballStemmer.PARAM_LANGUAGE, language),
-                createEngine(NERAnnotator.class, NERAnnotator.PARAM_FEATURE_EXTRACTION_FILE,
-                        "src/main/resources/feature/features.xml", NERAnnotator.PARAM_IS_TRAINING, true,
+				createEngine(KnownNEAnnotator.class),
+                createEngine(NERAnnotator.class,
+                        NERAnnotator.PARAM_IS_TRAINING, true,
                         DirectoryDataWriterFactory.PARAM_OUTPUT_DIRECTORY, modelDirectory,
-                        DefaultDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME,
-                        CrfSuiteStringOutcomeDataWriter.class));
+                        DefaultDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME, CrfSuiteStringOutcomeDataWriter.class
+                )
+        );
     }
 
     public static void trainModel(String modelDirectory) throws Exception {
@@ -51,9 +54,8 @@ public class ExecuteNER {
                         NERReader.CONLL_VIEW, testPosFile.getName()),
                 createEngine(NERReader.class),
                 createEngine(SnowballStemmer.class, SnowballStemmer.PARAM_LANGUAGE, language),
-                createEngine(NERAnnotator.class, NERAnnotator.PARAM_FEATURE_EXTRACTION_FILE,
-                        "src/main/resources/feature/features.xml",
-                        GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
+                createEngine(KnownNEAnnotator.class),
+                createEngine(NERAnnotator.class, GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
                 createEngine(ScoreNER.class)
         );
     }
