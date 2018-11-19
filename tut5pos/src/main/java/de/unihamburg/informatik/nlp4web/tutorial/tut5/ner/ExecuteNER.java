@@ -23,9 +23,7 @@ import de.unihamburg.informatik.nlp4web.tutorial.tut5.reader.NERReader;
 
 public class ExecuteNER {
 
-    public static void writeModel(File posTagFile, String modelDirectory, String language)
-            throws ResourceInitializationException, UIMAException, IOException {
-
+    public static void writeModel(File posTagFile, String modelDirectory, String language) throws UIMAException, IOException {
         runPipeline(
                 FilesCollectionReader.getCollectionReaderWithSuffixes(posTagFile.getAbsolutePath(),
                         NERReader.CONLL_VIEW, posTagFile.getName()),
@@ -45,10 +43,7 @@ public class ExecuteNER {
 
     }
 
-    //NOTE: The pipeline do not include the output writer. you SHOULD write a consumer which extract the predicted Named entities. You can compute then the scores accordingly
-
-    public static void classifyTestFile(String modelDirectory, File testPosFile, String language)
-            throws ResourceInitializationException, UIMAException, IOException {
+    public static void classifyTestFile(String modelDirectory, File testPosFile, String language) throws UIMAException, IOException {
         runPipeline(
                 FilesCollectionReader.getCollectionReaderWithSuffixes(testPosFile.getAbsolutePath(),
                         NERReader.CONLL_VIEW, testPosFile.getName()),
@@ -61,7 +56,6 @@ public class ExecuteNER {
     }
 
     public static void main(String[] args) throws Exception {
-
         long start = System.currentTimeMillis();
         String modelDirectory = "src/test/resources/model/";
         String language = "de";

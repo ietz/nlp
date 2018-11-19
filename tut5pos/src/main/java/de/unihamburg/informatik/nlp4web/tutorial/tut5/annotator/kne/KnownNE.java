@@ -1,5 +1,7 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne;
 
+import java.util.Optional;
+
 public class KnownNE {
 	public enum Type {
 		LOC("LOC"),
@@ -12,13 +14,13 @@ public class KnownNE {
 			this.tag = tag;
 		}
 
-		public static Type byTag(String tag) {
+		public static Optional<Type> byTag(String tag) {
 			for (Type type : Type.values()) {
 				if (type.tag.equals(tag)) {
-					return type;
+					return Optional.of(type);
 				}
 			}
-			return null;
+			return Optional.empty();
 		}
 	}
 

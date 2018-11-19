@@ -4,7 +4,19 @@
   <groupId>de.unihamburg.informatik.nlp4web.tutorial</groupId>
   <artifactId>de.unihamburg.informatik.nlp4web.tutorial.tut5</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
