@@ -1,6 +1,5 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator;
 
-import static org.apache.uima.fit.util.JCasUtil.indexCovering;
 import static org.apache.uima.fit.util.JCasUtil.select;
 import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 
@@ -32,18 +31,23 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
         TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
 
         FeatureExtractor1<Token> tokenTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
-                new LowerCaseFeatureFunction(), new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
-                new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 2));
+                new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
+                new CharacterNgramFeatureFunction(Orientation.LEFT_TO_RIGHT, 0, 3),
+                new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 3),
+                new CharacterCategoryPatternFunction<>(CharacterCategoryPatternFunction.PatternType.REPEATS_MERGED));
 
         FeatureExtractor1<Token> kneExtractor = new RelationIndexExtractor<>(
                 JCasUtil.indexCovering(jCas, Token.class, KnownNEAnnotation.class),
                 new KnownNeExtractor()
         );
 
+        FeatureExtractor1<Token> posExtractor = new TypePathExtractor<>(Token.class, "pos/PosValue");
+
         CombinedExtractor1<Token> tokenFeatureExtractor = new CombinedExtractor1<>(
                 stemExtractor,
                 tokenTextFeatureExtractor,
-                kneExtractor
+                kneExtractor,
+                posExtractor
         );
 
         return new CleartkExtractor<>(Token.class,
@@ -76,7 +80,7 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                 List<String> namedEntities = this.classify(instances);
                 int i = 0;
                 for (Token token : tokens) {
-                    NEIOBAnnotation namedEntity = new NEIOBAnnotation(jCas, token.getBegin(), token.getEnd());
+                    NEIOBAnnotation namedEntity = JCasUtil.selectCovered(NEIOBAnnotation.class, token).get(0);
                     namedEntity.setPredictValue(namedEntities.get(i++));
                     namedEntity.addToIndexes();
                 }

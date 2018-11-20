@@ -18,6 +18,7 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.reader;
 
 
+import de.tudarmstadt.ukp.dkpro.core.api.lexmorph.type.pos.POS;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -117,9 +118,15 @@ public class NERReader
                 idx += word.length();
                 NamedEntityTag.setGoldValue(NamedEntity);
 
-
-
                 NamedEntityTag.addToIndexes();
+
+
+                POS pos = new POS(jcas, token.getBegin(), token.getEnd());
+                pos.setPosValue(tag[2]);
+                pos.addToIndexes();
+
+                token.setPos(pos);
+
                 token.addToIndexes();
 
                 logger.log(Level.FINE,

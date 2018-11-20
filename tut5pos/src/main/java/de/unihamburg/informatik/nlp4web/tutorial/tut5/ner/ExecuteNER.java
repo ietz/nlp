@@ -9,7 +9,6 @@ import java.io.IOException;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne.KnownNEAnnotator;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
 import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
@@ -51,7 +50,7 @@ public class ExecuteNER {
                 createEngine(SnowballStemmer.class, SnowballStemmer.PARAM_LANGUAGE, language),
                 createEngine(KnownNEAnnotator.class),
                 createEngine(NERAnnotator.class, GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
-                createEngine(ScoreNER.class)
+                createEngine(ScoreNER.class, ScoreNER.PARAM_OUTPUT_FILE, testPosFile.getAbsolutePath() + ".out")
         );
     }
 
