@@ -1,0 +1,113 @@
+
+\documentclass{article}
+\title{Documentation: NER Component}
+\author{Tim Pietz (6808046)\and Inga Kempfert (6824114)}
+\date{\today}
+
+\usepackage{csquotes}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{footnote}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\begin{document}
+\maketitle
+
+\section{Task Description}
+The task was to implement a Named Entity Recognition component in UIMA using a conditional random field (CRF).
+This component is supposed to label named entities such as persons, locations and organisations in input text.
+
+\section{Implementation}
+We used the UIMA framework to implement a NER component based on the POS tagger given as an example.
+
+\subsection{The Pipeline}
+The pipeline consists of one reader and four analysis engines.
+The reader reads the raw CONLL-formated input data into the CONLL jCas view.
+
+The first analysis engine \texttt{NERReader} parses the CONLL view into tokens, POS tags and NEIOBAnnotations.
+The latter represents the tags for a named entity.
+For example, a named entity such as \enquote{Allianz Versicherungen} would be annotated as two separate consecutive annotations of the type \enquote{I-ORG}.
+The NEIOBAnnotations contain the gold value as well as value, which is predicted by the CRF.
+We included the POS tags, that are annotated in the input data, as separate POS annotations in the \texttt{NERReader}.
+
+The second analysis engine -- the Snowball Stemmer -- stems the input data.
+
+The third analysis engine is the \texttt{KnownNEAnnotator}, which we implemented ourselves.
+It extracts named entities from external resources and annotates those to the input data using our own annotation type called \texttt{KnownNE}.
+
+The fourth analysis engine is the \texttt{NERAnnotator}, which does the main part the named entity recognition.
+It extracts the relevant features from the input data using the ClearTK feature format and feature extractors.
+It passes the extracted features to ClearTK which either trains the model or classifies data using the model.
+
+During testing phase, another analysis engine is included in the pipeline: \texttt{ScoreNER}.
+It writes the gold and predicted value in order to be able to evaluate the performance of the NER component.
+
+\subsection{External Resources}
+
+% knownNEAnnotator
+There are a few relevant classes in the NER component.
+We implemented out own annotator \texttt{KnownNEAnnotator}, which is responsible for annotating known named entities in the input data.
+A \emph{known named entity} is a named entity that can be found in external resources.
+The external resources occur in different file formats, each of which is handled by a specifically designed file reader. Currently, we support readers for three different file formats:
+\begin{itemize}
+	\item The \texttt{KNEListSupplier} handles the format found in \texttt{eng.list} and \texttt{name.list} which is shown below.
+	Both of the files were given.
+	\begin{verbatim}
+	PER Inspector Maigret
+	LOC Africa
+	MISC Vietnam War
+	ORG Eletropaulo
+	\end{verbatim}
+	The data can be split into two columns.
+	The first column contains the NER tag, while the second column contains the named entity name.
+	\item The \texttt{jrcKNESupplier} handles the format found in the list \texttt{entities}\footnote{\url{https://ec.europa.eu/jrc/en/language-technologies/jrc-names}}.
+	An example for the data format is shown below:
+	\begin{verbatim}
+	1467646	P	u	Habiba+Ghribi
+	1467688	P	u	Melanie+Schultz+van+Infrastructuur
+	65795	O	u	Streitkräfte+Serbiens
+	858251	O	u	Partei+fur+Gerechtigkeit+und+Aufschwung
+	\end{verbatim}
+	For our purposes, only the second and the fourth column are relevant: the second column contains the type of named entity(P=Person, O=Organisation) and the fourth column contains the named entity name.
+	\item The \texttt{geonameKNESupplier} handles the format found in the list \texttt{cities500.txt}\footnote{\url{http://download.geonames.org/export/dump/}}.
+	An example for the data format is shown below:
+	\begin{verbatim}
+	4061113	Excel Excel	Excel,Excel Station	31.42794 -87.34137 P
+	PPL US	AL 099 672 124 128 America/Chicago 2017-03-09
+	\end{verbatim}
+	For our purposes, only the second column is relevant.
+	It is always assumed that entries from this list are locations.
+\end{itemize}
+The combined output of the KNESuppliers is stored in a trie structure for efficient search in larger documents.
+Each occurrence of a named entity found in the document text is annotated by a KNEAnnotation of the respective type (PERS, LOC, MISC or ORG).
+
+\subsection{Features}
+% NERAnnotator
+The \texttt{NERAnnotator} extracts features tokenwise from the input data and passes them to the model instances. We use the CleartkExtracter to extract a set of features for a window of five tokens: the two proceeding tokens, the current one and the two following tokens, in order to include some context. For each token we extract the following features:
+\begin{itemize}
+\item the text covered by the token
+\item whether the token is all uppercase, all lowercase, initial uppercase or mixed case
+\item character 3-gram for the token suffix
+\item character 3-gram for the token prefix
+\item the character category pattern function
+\item the token stem
+\item the POS tag
+\item the KnownNEAnnotation
+\end{itemize}
+Since the KNEAnnotations are added on a per-entity basis as opposed to a per-token basis, we build up an index using \texttt{JCasUtil.indexCovering} to quickly find the KNEAnnotations that cover a given token.
+This index is passed to our \texttt{RealtionIndexExtractor} which, given a single Token, applies both the token and each covering KnownNEAnnotation to our \texttt{KnownNeExtractor} which implements \texttt{FeatureExtractor2<Token, KnownNEAnnotation>}. The KnownNeExtractor adds features of the form like \enquote{KNE-*}, where * is PERS, ORG, LOC or MISC.
+
+
+\section{Evaluation}
+
+
+% ScoreNER
+% on the dev set
+
+% different feature combis
+
+% which features work well which don't
+
+
+\end{document}
