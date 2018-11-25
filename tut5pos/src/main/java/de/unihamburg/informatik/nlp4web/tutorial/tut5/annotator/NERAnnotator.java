@@ -31,10 +31,14 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
         TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
 
         FeatureExtractor1<Token> tokenTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
-                new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(),
+                new CapitalTypeFeatureFunction(), new NumericTypeFeatureFunction(), new LowerCaseFeatureFunction(),
                 new CharacterNgramFeatureFunction(Orientation.LEFT_TO_RIGHT, 0, 3),
                 new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 3),
                 new CharacterCategoryPatternFunction<>(CharacterCategoryPatternFunction.PatternType.REPEATS_MERGED));
+
+        FeatureExtractor1<Token> stemTextFeatureExtractor = new FeatureFunctionExtractor<>(stemExtractor,
+                new CharacterNgramFeatureFunction(Orientation.LEFT_TO_RIGHT, 0, 3),
+                new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 3));
 
         FeatureExtractor1<Token> kneExtractor = new RelationIndexExtractor<>(
                 JCasUtil.indexCovering(jCas, Token.class, KnownNEAnnotation.class),
@@ -43,18 +47,18 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
 
         FeatureExtractor1<Token> posExtractor = new TypePathExtractor<>(Token.class, "pos/PosValue");
 
-        FeatureExtractor1<Token> baseFeatureExtractor = tokenTextFeatureExtractor;
-        /*new CombinedExtractor1<>(
+        FeatureExtractor1<Token> baseFeatureExtractor = // tokenTextFeatureExtractor;
+        new CombinedExtractor1<>(
                 tokenTextFeatureExtractor,
-                posExtractor
-        );*/
-
-        FeatureExtractor1<Token> fullFeatureExtractor = new CombinedExtractor1<>(
-                baseFeatureExtractor,
+                stemTextFeatureExtractor,
                 kneExtractor,
                 stemExtractor,
                 posExtractor
         );
+
+        FeatureExtractor1<Token> fullFeatureExtractor = baseFeatureExtractor; /*new CombinedExtractor1<>(
+                baseFeatureExtractor
+        );*/
 
         CleartkExtractor<Token, Token> context = new CleartkExtractor<>(Token.class, baseFeatureExtractor, new Preceding(2), new Following(2));
         CleartkExtractor<Token, Token> current = new CleartkExtractor<>(Token.class, fullFeatureExtractor, new Focus());

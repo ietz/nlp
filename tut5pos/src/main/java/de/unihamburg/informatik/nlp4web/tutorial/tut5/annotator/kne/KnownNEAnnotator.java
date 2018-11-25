@@ -1,6 +1,8 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne.suppliers.KNEListSupplier;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne.suppliers.geonameKNESupplier;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.kne.suppliers.jrcKNESupplier;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.KnownNEAnnotation;
 import org.ahocorasick.trie.Trie;
 import org.apache.uima.UimaContext;
@@ -25,7 +27,10 @@ public class KnownNEAnnotator extends JCasAnnotator_ImplBase {
 		Map<KnownNE.Type, Trie.TrieBuilder> builders = new HashMap<>();
 
 		Stream.of(
-				new KNEListSupplier(new File("src/main/resources/ner/deu.list"))
+				//new KNEListSupplier(new File("src/main/resources/ner/deu.list")),
+				//new KNEListSupplier(new File("src/main/resources/ner/deu.list")),
+				new jrcKNESupplier(new File("src/main/resources/ner/entities"))
+				//new geonameKNESupplier(new File("src/main/resources/ner/cities500.txt"))
 		)
 				.flatMap(Supplier::get)
 				.forEach(kne -> builders.computeIfAbsent(kne.getType(), t -> Trie.builder()).addKeyword(kne.getName()));

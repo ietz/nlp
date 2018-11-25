@@ -58,8 +58,8 @@ public class ExecuteNER {
         long start = System.currentTimeMillis();
         String modelDirectory = "src/test/resources/model/";
         String language = "de";
-        File nerTrain = new File("src/main/resources/ner/ner_deu.train");
-        File nerTest = new File("src/main/resources/ner/ner_deu.dev");
+        File nerTrain = new File("src/main/resources/ner/ner_eng_50000.train");
+        File nerTest = new File("src/main/resources/ner/ner_eng_20000.dev");
         new File(modelDirectory).mkdirs();
         writeModel(nerTrain, modelDirectory, language);
         trainModel(modelDirectory);
