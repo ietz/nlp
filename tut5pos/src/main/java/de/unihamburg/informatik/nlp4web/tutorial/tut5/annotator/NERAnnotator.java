@@ -27,7 +27,7 @@ import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.NEIOBAnnotation;
 
 public class NERAnnotator extends CleartkSequenceAnnotator<String> {
 
-    private CleartkExtractor<Token, Token> getExtractor(JCas jCas) {
+    private Collection<CleartkExtractor<Token, Token>> getExtractors(JCas jCas) {
         TypePathExtractor<Token> stemExtractor = new TypePathExtractor<>(Token.class, "stem/value");
 
         FeatureExtractor1<Token> tokenTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
@@ -43,20 +43,28 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
 
         FeatureExtractor1<Token> posExtractor = new TypePathExtractor<>(Token.class, "pos/PosValue");
 
-        CombinedExtractor1<Token> tokenFeatureExtractor = new CombinedExtractor1<>(
-                stemExtractor,
+        FeatureExtractor1<Token> baseFeatureExtractor = tokenTextFeatureExtractor;
+        /*new CombinedExtractor1<>(
                 tokenTextFeatureExtractor,
+                posExtractor
+        );*/
+
+        FeatureExtractor1<Token> fullFeatureExtractor = new CombinedExtractor1<>(
+                baseFeatureExtractor,
                 kneExtractor,
+                stemExtractor,
                 posExtractor
         );
 
-        return new CleartkExtractor<>(Token.class,
-                tokenFeatureExtractor, new Preceding(2), new Focus(), new Following(2));
+        CleartkExtractor<Token, Token> context = new CleartkExtractor<>(Token.class, baseFeatureExtractor, new Preceding(2), new Following(2));
+        CleartkExtractor<Token, Token> current = new CleartkExtractor<>(Token.class, fullFeatureExtractor, new Focus());
+
+        return Arrays.asList(current, context);
     }
 
     @Override
     public void process(JCas jCas) throws AnalysisEngineProcessException {
-        CleartkExtractor<Token, Token> extractor = getExtractor(jCas);
+        Collection<CleartkExtractor<Token, Token>> extractors = getExtractors(jCas);
 
         for (Sentence sentence : select(jCas, Sentence.class)) {
             List<Instance<String>> instances = new ArrayList<>();
@@ -64,7 +72,9 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
 
             for (Token token : tokens) {
                 Instance<String> instance = new Instance<>();
-                instance.addAll(extractor.extractWithin(jCas, token, sentence));
+                for (CleartkExtractor<Token, Token> extractor : extractors) {
+                    instance.addAll(extractor.extractWithin(jCas, token, sentence));
+                }
 
                 if (this.isTraining()) {
                     NEIOBAnnotation goldNE = JCasUtil.selectCovered(jCas, NEIOBAnnotation.class, token).get(0);
