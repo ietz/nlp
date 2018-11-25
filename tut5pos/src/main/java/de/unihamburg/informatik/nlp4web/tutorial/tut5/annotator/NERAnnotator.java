@@ -6,12 +6,14 @@ import static org.apache.uima.fit.util.JCasUtil.selectCovered;
 import java.util.*;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.KnownNeExtractor;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.StringLengthFeatureFunction;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.RelationIndexExtractor;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.KnownNEAnnotation;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.cleartk.ml.CleartkSequenceAnnotator;
+import org.cleartk.ml.Feature;
 import org.cleartk.ml.Instance;
 import org.cleartk.ml.feature.extractor.*;
 import org.cleartk.ml.feature.extractor.CleartkExtractor.Focus;
@@ -40,6 +42,10 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                 new CharacterNgramFeatureFunction(Orientation.LEFT_TO_RIGHT, 0, 3),
                 new CharacterNgramFeatureFunction(Orientation.RIGHT_TO_LEFT, 0, 3));
 
+        FeatureExtractor1<Token> stemDiffExtractor = (view, focusAnnotation) -> Collections.singletonList(
+                new Feature("STEM_DIFF_LENGTH", focusAnnotation.getCoveredText().length() - focusAnnotation.getStemValue().length())
+        );
+
         FeatureExtractor1<Token> kneExtractor = new RelationIndexExtractor<>(
                 JCasUtil.indexCovering(jCas, Token.class, KnownNEAnnotation.class),
                 new KnownNeExtractor()
@@ -53,7 +59,8 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                 stemTextFeatureExtractor,
                 kneExtractor,
                 stemExtractor,
-                posExtractor
+                posExtractor,
+                stemDiffExtractor
         );
 
         FeatureExtractor1<Token> fullFeatureExtractor = baseFeatureExtractor; /*new CombinedExtractor1<>(
