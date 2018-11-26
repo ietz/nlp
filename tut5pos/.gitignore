@@ -1,1 +1,46 @@
 /src/test/resources/model/*
+
+/*.pdf
+
+# LaTeX
+*-blx.aux
+*-blx.bib
+*-converted-to.*
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.cb
+*.cb2
+*.dvi
+*.fdb_latexmk
+*.fls
+*.fmt
+*.fot
+*.lof
+*.log
+*.lot
+*.out
+*.pdfsync
+*.run.xml
+*.synctex
+*.synctex(busy)
+*.synctex.gz
+*.synctex.gz(busy)
+*.toc
+*.xdv
+.*.lb
+
+# hyperref
+*.brf
+
+# listings
+*.lol
+
+# TikZ & PGF
+*.dpth
+*.md5
+*.auxlock
+
+# todonotes
+*.tdo

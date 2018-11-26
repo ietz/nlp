@@ -82,32 +82,78 @@ The external resources occur in different file formats, each of which is handled
 The combined output of the KNESuppliers is stored in a trie structure for efficient search in larger documents.
 Each occurrence of a named entity found in the document text is annotated by a KNEAnnotation of the respective type (PERS, LOC, MISC or ORG).
 
-\subsection{Features}
+\subsection{Features}\label{sec:features}
 % NERAnnotator
 The \texttt{NERAnnotator} extracts features tokenwise from the input data and passes them to the model instances. We use the CleartkExtracter to extract a set of features for a window of five tokens: the two proceeding tokens, the current one and the two following tokens, in order to include some context. For each token we extract the following features:
-\begin{itemize}
-\item the text covered by the token
-\item whether the token is all uppercase, all lowercase, initial uppercase or mixed case
-\item character 3-gram for the token suffix
-\item character 3-gram for the token prefix
-\item the character category pattern function
-\item the token stem
-\item the POS tag
-\item the KnownNEAnnotation
-\end{itemize}
-Since the KNEAnnotations are added on a per-entity basis as opposed to a per-token basis, we build up an index using \texttt{JCasUtil.indexCovering} to quickly find the KNEAnnotations that cover a given token.
+\begin{enumerate}
+	\item for the text covered by the token:
+		\begin{itemize}
+			\item \texttt{LowerCaseFeatureFunction} for the lowercased String text value
+			\item \texttt{CapitalTypeFeatureFunction} for general characteristics regarding its casing
+			\item \texttt{NumericTypeFeatureFunction} for classification of numeric tokens
+			\item \texttt{CharacterCategoryPatternFeatureFunction} for token content characteristics
+			\item \texttt{CharacterNgramFeatureFunction} to extract a prefix and suffix each of length 3
+		\end{itemize}
+	\item the token stem
+	\item and features of the token stem:
+		\begin{itemize}
+			\item \texttt{CharacterNgramFeatureFunction} also for a prefix and suffix of length 3
+		\end{itemize}
+	\item the difference in length of the stem value compared to the token text
+	\item the POS tag
+	\item the KnownNEAnnotation
+\end{enumerate}
+Since our KNEAnnotations are added on a per-entity basis as opposed to a per-token basis, we build up an index using \texttt{JCasUtil.indexCovering} to quickly find the KNEAnnotations that cover a given token.
 This index is passed to our \texttt{RealtionIndexExtractor} which, given a single Token, applies both the token and each covering KnownNEAnnotation to our \texttt{KnownNeExtractor} which implements \texttt{FeatureExtractor2<Token, KnownNEAnnotation>}. The KnownNeExtractor adds features of the form like \enquote{KNE-*}, where * is PERS, ORG, LOC or MISC.
 
+\section{Feature Tuning}
+We tested the performance of our model for each of the features listed in \autoref{sec:features} individually, deciding whether or not to include them into the \(\pm 2\) token window, on the focus annotation or both.
+
+The results are as follows:
+
+\begin{itemize}
+	\item
+		Adding the token text features to the focus annotation increased our F1 Score by about \(9.89\). Also enabling the feature for the context tokens (i.e. the \(\pm 2\) tokens) further increased the score by \(4.37\).
+	
+	\item
+		Adding the stem text value yields an increase in F1 score by \(1.30\).
+		Enabling it for the context tokens did, however, \emph{decrease} the score by \(0.24\) when compared to enabling it for the focus annotation only.
+	
+	\item
+		The stem text features (prefix and suffix) increased it by \(1.42\), regardless of whether or not it is enabled for the context.
+	
+	\item
+		The length difference feature of stem compared to token added around \(0.21\) percentage points to the F1 score, also enabling it for the context decreased it by around \(0.09\) percent.
+	
+	\item
+		Adding the POS tag feature value to the context (!) increased the model score by around \(0.83\), also enabling it for the focus annotation (!) decreased it by \(0.22\).
+	
+	\item
+		Extracting and annotating listed entity names from external resources increased the score by \(1.38\), enabling it for the context further increased this value by \(0.08\).
+\end{itemize}
+
+Similarly, we tested which results we could obtain by each of the external datasets.
+\begin{itemize}
+	\item the \texttt{name.list} dataset that was provided resulted in a decrease of our F1 score by around \(10.3\).
+	\item the \texttt{eng.list} also decreased the score, by an even higher \(15.8\) percentage points
+	\item the JRC \texttt{entities} dataset increased the F1 Score by \(1.3\)
+	\item the Geonames \texttt{entities500.txt} once again decreased our score by \(0.3\)
+\end{itemize}
+
+We chose the features and datasets that resulted in an increase in model performance during our testing.
+We did not remove any of our suggested/tested features, as each of them resulted in a net performance increase.
 
 \section{Evaluation}
+Finally, running our model against the test dataset, we obtained the following results:
 
-
-% ScoreNER
-% on the dev set
-
-% different feature combis
-
-% which features work well which don't
+\begin{verbatim}
+processed 51578 tokens with 5917 phrases; found: 5778 phrases; correct: 5196.
+accuracy:  98.01%; precision:  89.93%; recall:  87.81%; FB1:  88.86
+              LOC: precision:  91.51%; recall:  91.91%; FB1:  91.71  1838
+             MISC: precision:  89.50%; recall:  83.04%; FB1:  86.15  848
+              ORG: precision:  85.54%; recall:  82.03%; FB1:  83.75  1286
+              PER: precision:  91.64%; recall:  90.34%; FB1:  90.98  1806
+\end{verbatim}
 
 
 \end{document}
