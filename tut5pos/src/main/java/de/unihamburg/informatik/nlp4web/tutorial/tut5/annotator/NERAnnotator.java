@@ -58,14 +58,14 @@ public class NERAnnotator extends CleartkSequenceAnnotator<String> {
                 tokenTextFeatureExtractor,
                 stemTextFeatureExtractor,
                 kneExtractor,
-                stemExtractor,
-                posExtractor,
-                stemDiffExtractor
+                posExtractor
         );
 
-        FeatureExtractor1<Token> fullFeatureExtractor = baseFeatureExtractor; /*new CombinedExtractor1<>(
-                baseFeatureExtractor
-        );*/
+        FeatureExtractor1<Token> fullFeatureExtractor = new CombinedExtractor1<>(
+                baseFeatureExtractor,
+                stemExtractor,
+                stemDiffExtractor
+        );
 
         CleartkExtractor<Token, Token> context = new CleartkExtractor<>(Token.class, baseFeatureExtractor, new Preceding(2), new Following(2));
         CleartkExtractor<Token, Token> current = new CleartkExtractor<>(Token.class, fullFeatureExtractor, new Focus());
