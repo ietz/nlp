@@ -1,20 +1,41 @@
 \documentclass{article}
 
 % \usepackage{blindtext}
+\usepackage[backend=biber, style=authoryear]{biblatex}
+\usepackage[margin=3cm]{geometry}
+\usepackage{footnote}
 
 \title{Pre-Proposal for the Final Project}
 \date{\today}
 \author{Tim Fischer (xxxxxxx) \and Tim Pietz (6808046) \and Inga Kempfert (6824114)}
 
+\bibliography{lit.bib}
+
 \begin{document}
 \maketitle
 
 \section{What? - Our Research Problem}
+Today, the task of fake news identification plays an important role. Via the internet and social media it is very easy for people to post and read anything - which does not necessarily have to be true. However, people tend to believe the things they read, if they seem true to them. This is a problem, especially in elections \parencite{shu2018fakenewsnet} or other important topics such as climate change.
+
+For our final project, we will implement a system for fake news identification. We will build a model using the corpus provided by \textcite{shu2018fakenewsnet} and use the features they describe in their paper. However, since the corpus they use in their paper is not yet published, we will resort to an older corpus, which does not have features for dynamic information.
 
 \section{How? -  Our Approach}
+% non-trivial task that requires multi-source information (news content, social context, dynamic information)
+We will read the paper in detail and decide which machine learning approach from clearTK fits best for this purpose. We will then implement and train a model for fake news identification and build a frontend, so that user can input a snippet of text, as well as certain necessary features, so that the model can then decide whether it was fake news or not.
+We will evaluate our model via the achieved F1 score. \textcite{shu2018fakenewsnet} achieved an F1 score somewhere between 0.45 and 0.78 depending on the corpus and the model they used for the task. Our goal is to reach similar results.
+
+This, however, is not necessarily a given, since we use a different data set and do not have access to the features for dynamic information.
 
 \section{With What? - Our Resources}
+Since the corpus used by \textcite{shu2018fakenewsnet} is not available yet, we use the alternative data set provided on the Github page\footnote{https://github.com/KaiDMML/FakeNewsNet/tree/master/Data}.
+For training our model we will use the methods provided by clearTK.
+
+GUI bla bla
 
 \section{When? - Our Timeline}
+\begin{description}
+	\item[Time XY] bla bla
+\end{description}
 
+\printbibliography
 \end{document}
