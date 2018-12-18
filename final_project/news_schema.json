@@ -1,0 +1,181 @@
+{
+    "top_img": "string",
+    "text": "string",
+    "authors": "string[]",
+    "keywords": "string[]",
+    "meta_data": {
+        "googlebot": "string",
+        "generator": "string",
+        "og": {
+            "site_name": "string",
+            "description": "string",
+            "title": "string",
+            "locale": "string",
+            "image": "string",
+            "url": "string",
+            "type": "string",
+            "fb_appid": "integer",
+            "pubdate": "string",
+            "updated_time": "string"
+        },
+        "twitter": {
+            "description": "string",
+            "creator": "string",
+            "image": "string",
+            "title": "string",
+            "site": "string",
+            "card": "string",
+            "url": "string",
+            "app": {
+                "url": {
+                    "ipad": "string",
+                    "iphone": "string",
+                    "googleplay": "string"
+                },
+                "name": {
+                    "ipad": "string",
+                    "iphone": "string",
+                    "googleplay": "string"
+                },
+                "id": {
+                    "ipad": "integer",
+                    "iphone": "integer",
+                    "googleplay": "string"
+                }
+            },
+            "domain": "string",
+            "partner": "string",
+            "text": {
+                "title": "string"
+            }
+        },
+        "robots": "string",
+        "DC.date.issued": "string",
+        "fb": {
+            "app_id": "integer",
+            "pages": "integer",
+            "admins": "integer",
+            "op-recirculation-ads": "string"
+        },
+        "msapplication-TileImage": "string",
+        "article": {
+            "publisher": "string",
+            "section": "string",
+            "published_time": "string",
+            "author": "string",
+            "tag": "string",
+            "modified_time": "string"
+        },
+        "google-site-verification": "string",
+        "viewport": "string",
+        "description": "string",
+        "host": "string",
+        "build": "string",
+        "pubdate": "string",
+        "author": "string",
+        "section": "string",
+        "thumbnail": "string",
+        "template-top": "string",
+        "vr": {
+            "canonical": "string",
+            "category": "string",
+            "type": "string"
+        },
+        "keywords": "string",
+        "lastmod": "string",
+        "publisher": "string",
+        "shareaholic": {
+            "site_name": "string",
+            "language": "string",
+            "url": "string",
+            "article_author_name": "string",
+            "image": "string",
+            "site_id": "string",
+            "article_published_time": "string",
+            "article_modified_time": "string",
+            "keywords": "string",
+            "wp_version": "string",
+            "shareable_page": "string"
+        },
+        "ca_image": "string",
+        "ca_title": "string",
+        "specificfeeds-verification-code-ai9qSkdQTFFZc0JCQ0hCWmw2YVFnL1hPVHQ0aGhWaEVrMTJ2Z3ZwMDNpUFRhbHhWMFdQVmoxK3RPOXNCeEQvdW1EaCtWZ2Z2ZHFkWW1jTGM2akhJZkJKclZCaXJxRHJ5VEJNOTdyWDBMYnJkcHVRWFcrbFQ1RFBqcmV2aHBHdHB8MVhPS1hCa0JIdjFJbzE3VXNyeDdzZ0syRys3YlcrTjNSdThwWUZUSUhUYz0=": "string",
+        "fb_title": "string",
+        "copyright": "string",
+        "al": {
+            "ipad": {
+                "url": "string",
+                "app_store_id": "integer",
+                "app_name": "string"
+            },
+            "web": {
+                "url": "string"
+            },
+            "android": {
+                "url": "string",
+                "app_name": "string",
+                "package": "string"
+            },
+            "iphone": {
+                "url": "string",
+                "app_store_id": "integer",
+                "app_name": "string"
+            }
+        },
+        "Date": "string",
+        "Last-Modified": "string",
+        "news_keywords": "string",
+        "propeller": "string",
+        "referrer": "string",
+        "format-detection": "string",
+        "theme-color": "string",
+        "msapplication-TileColor": "string",
+        "MobileOptimized": "integer",
+        "HandheldFriendly": "string",
+        "title": "string",
+        "modernizr-version": "string",
+        "foundation-version": "string",
+        "jquery-version": "string",
+        "theme-version": "string",
+        "publish_date": "string",
+        "ov": {
+            "id": "integer"
+        },
+        "ia": {
+            "markup_url": "string"
+        },
+        "msApplication-ID": "string",
+        "msvalidate.01": "string",
+        "application-name": "string",
+        "msApplication-PackageFamilyName": "string",
+        "verify-v1": "string",
+        "verifyownership": "string",
+        "onesignal": "string",
+        "date": "string",
+        "outbrainsection": "string",
+        "sailthru.date": "string",
+        "sailthru.title": "string",
+        "sailthru.tags": "string",
+        "style-tools": "string",
+        "sailthru.description": "string",
+        "apple-mobile-web-app-capable": "string",
+        "wp-parsely_version": "string",
+        "theme": "string",
+        "object-hash": "integer",
+        "apple-itunes-app": "string",
+        "msapplication-tooltip": "string",
+        "msapplication-window": "string",
+        "msapplication-task": "string",
+        "apple-touch-fullscreen": "string"
+    },
+    "canonical_link": "string",
+    "images": "string[]",
+    "title": "string",
+    "url": "string",
+    "summary": "string",
+    "movies": "string[]",
+    "publish_date": {
+        "$date": "integer"
+    },
+    "source": "string"
+}
