@@ -9,6 +9,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Level;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
+
 /**
  * The AnnotationWriter can be used to print Annotations in the text.<br>
  * In it's current implementation it prints all NamedEntityAnnotations.
@@ -45,10 +47,25 @@ public class AnnotationWriter extends JCasConsumer_ImplBase {
 		sb.append("-- Annotations --");
 		sb.append(LF);
 		
-        for (Annotation a : JCasUtil.select(jcas, Annotation.class)) {
-            sb.append("[" + a.getType().getShortName() + "] ");
-            sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
-            sb.append(a.getCoveredText());
+//        for (Annotation a : JCasUtil.select(jcas, Annotation.class)) {
+//            sb.append("[" + a.getType().getShortName() + "] ");
+//            sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
+//            sb.append(a.getCoveredText());
+//            sb.append(LF);
+//        }
+        
+        for (FakeNewsAnnotation fna : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {
+            sb.append("[" + fna.getType().getShortName() + "] ");
+            sb.append("(" + fna.getBegin() + ", " + fna.getEnd() + ") ");
+            sb.append(fna.getCoveredText());
+            sb.append(LF);
+            sb.append("ID: " + fna.getId());
+            sb.append(LF);
+            sb.append("Real? " + fna.getGoldValue());
+            sb.append(LF);
+            sb.append("Source: " + fna.getSource());
+            sb.append(LF);
+            sb.append("Authors: " + fna.getAuthors());
             sb.append(LF);
         }
 

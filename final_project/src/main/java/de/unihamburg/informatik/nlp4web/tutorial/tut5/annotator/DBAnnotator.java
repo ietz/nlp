@@ -7,8 +7,11 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Logger;
+
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 
 public class DBAnnotator extends JCasAnnotator_ImplBase {
 	
@@ -60,19 +63,27 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 //		String pos;
 //		boolean initSentence = false;
 		
+		FakeNewsAnnotation fnAnnotation = new FakeNewsAnnotation(docView);
 		StringBuffer newsText = new StringBuffer();
 		for (String line : tokens) {
 			String[] splitted = line.split("\t");
+			if(splitted.length < 2)
+				continue;
+			
 			switch(splitted[0]) {
-				case "--NEWS--":
+				case "--NEWSID--":
+					fnAnnotation.setId(Long.parseLong(splitted[1]));
 					break;
 				case "--AUTHORS--":
+					fnAnnotation.setAuthors(splitted[1]);
 					break;
 				case "--KEYWORDS--":
 					break;
 				case "--REAL--":
+					fnAnnotation.setGoldValue(Boolean.parseBoolean(splitted[1]));
 					break;
 				case "--SOURCE--":
+					fnAnnotation.setSource(splitted[1]);
 					break;
 				case "--TITLE--":
 					newsText.append(splitted[1] + "\n");
@@ -84,8 +95,10 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 					break;
 			}
 		}
-		
 		docView.setSofaDataString(newsText.toString(), "text/plain");
+		fnAnnotation.setBegin(0);
+		fnAnnotation.setEnd(newsText.length());
+		fnAnnotation.addToIndexes();
 		
 //			// new sentence if there's a new line
 //			if (line.equals("")) {
