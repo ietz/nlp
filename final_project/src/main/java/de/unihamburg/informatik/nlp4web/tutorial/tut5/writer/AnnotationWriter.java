@@ -6,7 +6,6 @@ import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Level;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;

@@ -51,7 +51,7 @@ public class DBReader
         news = utils.selectAllNews();
         
         i = from;
-        size = to - from;
+        size = to;
     }
 
     @Override

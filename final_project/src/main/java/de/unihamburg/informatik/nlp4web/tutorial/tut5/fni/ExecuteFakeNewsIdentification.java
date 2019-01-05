@@ -19,8 +19,10 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.DBAnnotator;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.FeatureAnnotator;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.reader.DBReader;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.AnnotationWriter;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.EvaluationWriter;
 
 public class ExecuteFakeNewsIdentification {
 
@@ -30,7 +32,7 @@ public class ExecuteFakeNewsIdentification {
         				DBReader.PARAM_DB, db,
         				DBReader.PARAM_LANGUAGE, language,
         				DBReader.PARAM_FROM, 0,
-        				DBReader.PARAM_TO, 3,
+        				DBReader.PARAM_TO, 200,
         				DBReader.PARAM_VIEW, "DB-VIEW"),
         	createEngine(DBAnnotator.class,
         				DBAnnotator.PARAM_VIEW, "DB-VIEW"),
@@ -38,11 +40,11 @@ public class ExecuteFakeNewsIdentification {
             createEngine(StanfordPosTagger.class),
             createEngine(StanfordLemmatizer.class),          
         	createEngine(AnnotationWriter.class,
-    				AnnotationWriter.PARAM_DBVIEW, "DB-VIEW")
-        	/*,createEngine(NERAnnotator.class,
-                    NERAnnotator.PARAM_IS_TRAINING, true,
+    				AnnotationWriter.PARAM_DBVIEW, "DB-VIEW"),
+        	createEngine(FeatureAnnotator.class,
+                    FeatureAnnotator.PARAM_IS_TRAINING, true,
                     DirectoryDataWriterFactory.PARAM_OUTPUT_DIRECTORY, modelDirectory,
-                    DefaultDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME, CrfSuiteStringOutcomeDataWriter.class*/
+                    DefaultDataWriterFactory.PARAM_DATA_WRITER_CLASS_NAME, CrfSuiteStringOutcomeDataWriter.class)
         );
     }
 
@@ -51,16 +53,20 @@ public class ExecuteFakeNewsIdentification {
 
     }
 
-    public static void classifyTestFile(String db, String language) throws UIMAException, IOException {
+    public static void classifyTestFile(String db, String language, String modelDirectory) throws UIMAException, IOException {
         runPipeline(
             	createReader(DBReader.class,
             				DBReader.PARAM_DB, db,
             				DBReader.PARAM_LANGUAGE, language,
-            				DBReader.PARAM_FROM, 0,
-            				DBReader.PARAM_TO, 3),
-            	createEngine(DBAnnotator.class),
-            	createEngine(AnnotationWriter.class)
-            	/*,createEngine(NERAnnotator.class, GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar")*/
+            				DBReader.PARAM_FROM, 200,
+            				DBReader.PARAM_TO, 210,
+            				DBReader.PARAM_VIEW, "DB-VIEW"),
+            	createEngine(DBAnnotator.class,
+        				DBAnnotator.PARAM_VIEW, "DB-VIEW"),
+            	/*createEngine(AnnotationWriter.class,
+    				AnnotationWriter.PARAM_DBVIEW, "DB-VIEW"),*/
+            	createEngine(FeatureAnnotator.class, GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "model.jar"),
+                createEngine(EvaluationWriter.class)   
             );
     }
 
@@ -71,9 +77,9 @@ public class ExecuteFakeNewsIdentification {
         String language = "en";
         String dbpath = new ExecuteFakeNewsIdentification().getResourceFilePath("db/fakenewsnet.db");
         String db = "jdbc:sqlite:"+dbpath;
-        writeModel(db, language, modelDirectory);
+//        writeModel(db, language, modelDirectory);
 //        trainModel(modelDirectory);
-//        classifyTestFile(db, language, modelDirectory);
+        classifyTestFile(db, language, modelDirectory);
         long now = System.currentTimeMillis();
         UIMAFramework.getLogger().log(Level.INFO, "Time: " + (now - start) + "ms");
     }
