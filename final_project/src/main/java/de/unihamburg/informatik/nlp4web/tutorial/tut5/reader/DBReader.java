@@ -3,6 +3,7 @@ package de.unihamburg.informatik.nlp4web.tutorial.tut5.reader;
 import java.io.IOException;
 import java.util.List;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.db.FakeNewsNet;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.collection.CollectionException;
@@ -47,9 +48,10 @@ public class DBReader
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
-        DBUtils utils = new DBUtils(db);
-        news = utils.selectAllNews();
-        
+
+        FakeNewsNet newsNet = FakeNewsNet.load(db);
+        this.news = newsNet.getNews();
+
         i = from;
         size = to;
     }

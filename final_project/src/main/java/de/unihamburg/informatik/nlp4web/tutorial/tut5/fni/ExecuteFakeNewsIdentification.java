@@ -77,8 +77,8 @@ public class ExecuteFakeNewsIdentification {
         String language = "en";
         String dbpath = new ExecuteFakeNewsIdentification().getResourceFilePath("db/fakenewsnet.db");
         String db = "jdbc:sqlite:"+dbpath;
-//        writeModel(db, language, modelDirectory);
-//        trainModel(modelDirectory);
+        writeModel(db, language, modelDirectory);
+        trainModel(modelDirectory);
         classifyTestFile(db, language, modelDirectory);
         long now = System.currentTimeMillis();
         UIMAFramework.getLogger().log(Level.INFO, "Time: " + (now - start) + "ms");

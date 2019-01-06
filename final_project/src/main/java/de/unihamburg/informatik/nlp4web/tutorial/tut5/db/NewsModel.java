@@ -1,5 +1,8 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NewsModel {
 	private Long id;
 	
@@ -11,6 +14,7 @@ public class NewsModel {
 	private String text;
 	private String title;
 	private String url;
+	private List<Share> shares = new ArrayList<>();
 	
 	public NewsModel(Long id, String authors, String keywords, long publishDate, boolean real, String source,
 			String text, String title, String url) {
@@ -80,6 +84,14 @@ public class NewsModel {
 		this.authors = authors;
 	}
 
+	public List<Share> getShares() {
+		return shares;
+	}
+
+	public void addShare(Share share) {
+		shares.add(share);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -94,6 +106,4 @@ public class NewsModel {
 		builder.append("--WEBURL--\t"+url+"\n");
 		return builder.toString();
 	}
-	
-	
 }

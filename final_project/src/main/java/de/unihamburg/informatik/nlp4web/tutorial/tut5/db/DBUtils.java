@@ -36,30 +36,57 @@ public class DBUtils {
      */
     public List<NewsModel> selectAllNews(){
         String sql = "SELECT id, authors, keywords, publishDate, real, source, text, title, url FROM news ORDER BY id ASC";
-        
-    	List<NewsModel> result = new ArrayList<>();
-        try (Connection conn = this.connect();
-             Statement stmt  = conn.createStatement();
-             ResultSet rs    = stmt.executeQuery(sql)){
-                    	
-            // loop through the result set
-            while (rs.next()) {
-            	NewsModel model = new NewsModel(rs.getLong("id"), rs.getString("authors"), rs.getString("keywords"), 
-            									rs.getLong("publishDate"), rs.getBoolean("real"), rs.getString("source"), 
-            									rs.getString("text"), rs.getString("title"), rs.getString("url"));
-            	result.add(model);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return result;
+
+        return mapQueryResults(sql, rs -> new NewsModel(
+        		rs.getLong("id"), rs.getString("authors"), rs.getString("keywords"),
+				rs.getLong("publishDate"), rs.getBoolean("real"), rs.getString("source"),
+				rs.getString("text"), rs.getString("title"), rs.getString("url")));
     }
-    
-   /**
-    * @param args the command line arguments
-    */
-   public static void main(String[] args) {
-       DBUtils utils = new DBUtils("jdbc:sqlite:C:/Development/git/nlp/final_project/fakenewsnet.db");
-       utils.selectAllNews();
-   }
+
+    public List<UserModel> selectAllUsers() {
+    	String sql = "SELECT id, name FROM user";
+
+    	return mapQueryResults(sql, rs -> new UserModel(
+    			rs.getLong("id"), rs.getString("name")
+		));
+	}
+
+    public List<ShareRelation> selectAllShareRelations() {
+    	String sql = "SELECT news_id, user_id, count FROM news_user";
+
+    	return mapQueryResults(sql, rs -> new ShareRelation(
+    			rs.getLong("news_id"), rs.getLong("user_id"), rs.getLong("count")
+		));
+	}
+
+    public List<FollowRelation> selectAllFollowRelations() {
+    	String sql = "SELECT user_id_1, user_id_2 FROM user_user";
+
+    	return mapQueryResults(sql, rs -> new FollowRelation(
+    			rs.getLong("user_id_1"), rs.getLong("user_id_2")
+		));
+	}
+
+
+
+	private <T> List<T> mapQueryResults(String sql, ResultMapFn<T> mapFn) {
+		List<T> result = new ArrayList<>();
+		try (Connection conn = this.connect();
+			 Statement stmt  = conn.createStatement();
+			 ResultSet rs    = stmt.executeQuery(sql)){
+
+			// loop through the result set
+			while (rs.next()) {
+				result.add(mapFn.map(rs));
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return result;
+	}
+
+	@FunctionalInterface
+   	private interface ResultMapFn<T> {
+    	T map(ResultSet rs) throws SQLException;
+	}
 }
