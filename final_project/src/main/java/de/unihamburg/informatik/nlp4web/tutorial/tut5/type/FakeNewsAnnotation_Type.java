@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Thu Jan 03 17:05:12 CET 2019
+ * Updated by JCasGen Sun Jan 06 22:38:48 CET 2019
  * @generated */
 public class FakeNewsAnnotation_Type extends Annotation_Type {
   /** @generated */
@@ -141,6 +141,30 @@ public class FakeNewsAnnotation_Type extends Annotation_Type {
     ll_cas.ll_setLongValue(addr, casFeatCode_id, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_shareCount;
+  /** @generated */
+  final int     casFeatCode_shareCount;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public long getShareCount(int addr) {
+        if (featOkTst && casFeat_shareCount == null)
+      jcas.throwFeatMissing("shareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return ll_cas.ll_getLongValue(addr, casFeatCode_shareCount);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setShareCount(int addr, long v) {
+        if (featOkTst && casFeat_shareCount == null)
+      jcas.throwFeatMissing("shareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    ll_cas.ll_setLongValue(addr, casFeatCode_shareCount, v);}
+    
+  
 
 
 
@@ -172,6 +196,10 @@ public class FakeNewsAnnotation_Type extends Annotation_Type {
  
     casFeat_id = jcas.getRequiredFeatureDE(casType, "id", "uima.cas.Long", featOkTst);
     casFeatCode_id  = (null == casFeat_id) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_id).getCode();
+
+ 
+    casFeat_shareCount = jcas.getRequiredFeatureDE(casType, "shareCount", "uima.cas.Long", featOkTst);
+    casFeatCode_shareCount  = (null == casFeat_shareCount) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_shareCount).getCode();
 
   }
 }

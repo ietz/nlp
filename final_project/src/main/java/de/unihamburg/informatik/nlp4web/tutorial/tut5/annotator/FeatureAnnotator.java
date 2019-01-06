@@ -26,7 +26,8 @@ public class FeatureAnnotator extends CleartkSequenceAnnotator<String> {
 
         FeatureExtractor1<FakeNewsAnnotation> idExtractor = new TypePathExtractor<>(FakeNewsAnnotation.class, "id");
         FeatureExtractor1<FakeNewsAnnotation> sourceExtractor = new TypePathExtractor<>(FakeNewsAnnotation.class, "source");
-        
+        FeatureExtractor1<FakeNewsAnnotation> shareCountExtractor = new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount");
+
         // covered text wirklich sinnvoll?
         FeatureExtractor1<FakeNewsAnnotation> newsTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
         			new NewsLengthFeatureFunction()
@@ -35,7 +36,7 @@ public class FeatureAnnotator extends CleartkSequenceAnnotator<String> {
         // nicht sinnvoll, da mehrere Autoren in einem String getrennt mit "; " z.B. "tim; anna; ..."
         FeatureExtractor1<FakeNewsAnnotation> authorsExtractor = new TypePathExtractor<>(FakeNewsAnnotation.class, "authors");
         
-        return Arrays.asList(idExtractor, sourceExtractor, newsTextFeatureExtractor, authorsExtractor);
+        return Arrays.asList(idExtractor, sourceExtractor, shareCountExtractor, newsTextFeatureExtractor, authorsExtractor);
     }
 
     @Override

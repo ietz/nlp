@@ -35,6 +35,11 @@
           <description/>
           <rangeTypeName>uima.cas.Long</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>shareCount</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

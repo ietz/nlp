@@ -92,6 +92,10 @@ public class NewsModel {
 		shares.add(share);
 	}
 
+	public long getShareCount() {
+		return this.shares.stream().mapToLong(Share::getCount).sum();
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -104,6 +108,7 @@ public class NewsModel {
 		builder.append("--TITLE--\t"+title+"\n");
 		builder.append("--TEXT--\t"+text+"\n");
 		builder.append("--WEBURL--\t"+url+"\n");
+		builder.append("--SHARECOUNT--\t"+this.getShareCount()+"\n");
 		return builder.toString();
 	}
 }

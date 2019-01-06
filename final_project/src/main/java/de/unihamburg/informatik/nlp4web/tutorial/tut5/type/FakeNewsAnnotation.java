@@ -7,13 +7,14 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;
 import org.apache.uima.jcas.cas.TOP_Type;
 
+import org.apache.uima.jcas.cas.StringArray;
 import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.jcas.tcas.Annotation;
 
 
 /** 
- * Updated by JCasGen Thu Jan 03 17:05:12 CET 2019
- * XML source: C:/Development/Git/nlp/final_project/src/main/resources/desc/type/FakeNewsAnnotation.xml
+ * Updated by JCasGen Sun Jan 06 22:38:48 CET 2019
+ * XML source: C:/Users/Derp/Projects/nlp/final_project/src/main/resources/desc/type/FakeNewsAnnotation.xml
  * @generated */
 public class FakeNewsAnnotation extends Annotation {
   /** @generated
@@ -185,6 +186,28 @@ public class FakeNewsAnnotation extends Annotation {
     if (FakeNewsAnnotation_Type.featOkTst && ((FakeNewsAnnotation_Type)jcasType).casFeat_id == null)
       jcasType.jcas.throwFeatMissing("id", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
     jcasType.ll_cas.ll_setLongValue(addr, ((FakeNewsAnnotation_Type)jcasType).casFeatCode_id, v);}    
+   
+    
+  //*--------------*
+  //* Feature: shareCount
+
+  /** getter for shareCount - gets 
+   * @generated
+   * @return value of the feature 
+   */
+  public long getShareCount() {
+    if (FakeNewsAnnotation_Type.featOkTst && ((FakeNewsAnnotation_Type)jcasType).casFeat_shareCount == null)
+      jcasType.jcas.throwFeatMissing("shareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return jcasType.ll_cas.ll_getLongValue(addr, ((FakeNewsAnnotation_Type)jcasType).casFeatCode_shareCount);}
+    
+  /** setter for shareCount - sets  
+   * @generated
+   * @param v value to set into the feature 
+   */
+  public void setShareCount(long v) {
+    if (FakeNewsAnnotation_Type.featOkTst && ((FakeNewsAnnotation_Type)jcasType).casFeat_shareCount == null)
+      jcasType.jcas.throwFeatMissing("shareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    jcasType.ll_cas.ll_setLongValue(addr, ((FakeNewsAnnotation_Type)jcasType).casFeatCode_shareCount, v);}    
   }
 
     

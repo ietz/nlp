@@ -91,6 +91,9 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 				case "--TEXT--":
 					newsText.append(splitted[1]);
 					break;
+				case "--SHARECOUNT--":
+					fnAnnotation.setShareCount(Long.parseLong(splitted[1]));
+					break;
 				default:
 					break;
 			}
