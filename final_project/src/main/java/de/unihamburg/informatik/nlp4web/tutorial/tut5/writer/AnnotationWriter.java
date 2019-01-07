@@ -66,6 +66,8 @@ public class AnnotationWriter extends JCasConsumer_ImplBase {
             sb.append(LF);
             sb.append("Authors: " + fna.getAuthors());
             sb.append(LF);
+            sb.append("Shares: " + fna.getShareCount());
+            sb.append(LF);
         }
 
 		sb.append(LF);

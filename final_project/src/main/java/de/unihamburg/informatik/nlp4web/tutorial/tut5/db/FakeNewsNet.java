@@ -34,10 +34,10 @@ public class FakeNewsNet {
 			UserModel user = userIndex.get(shareRelation.getUserId());
 			NewsModel news = newsIndex.get(shareRelation.getNewsId());
 
-			// TODO: Remove when DB is fixed
-			if (user == null || news == null) {
-				continue;
-			}
+//			// TODO: Remove when DB is fixed
+//			if (user == null || news == null) {
+//				continue;
+//			}
 
 			Share share = new Share(user, news, shareRelation.getCount());
 			user.addShare(share);
