@@ -1,5 +1,8 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.db;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,6 +34,50 @@ public class DBUtils {
         return conn;
     }
 	
+    public void selectAllTitleAndReal() {
+    	String sql = "SELECT title, real FROM news ";
+    	
+		try (Connection conn = this.connect();
+			 Statement stmt  = conn.createStatement();
+			 ResultSet rs    = stmt.executeQuery(sql)){
+
+			try (PrintStream out = new PrintStream(new FileOutputStream("/home/inga/Documents/Uni/NLP4WEB/nlp/final_project/src/main/resources/db/titlereal.txt"))) {
+				while (rs.next()) {
+					out.print(rs.getString("title") + "\t" + rs.getBoolean("real") + "\n");
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}    	
+    }
+    
+    public void selectAllTextAndReal() {
+    	String sql = "SELECT text, real FROM news ";
+    	
+		try (Connection conn = this.connect();
+			 Statement stmt  = conn.createStatement();
+			 ResultSet rs    = stmt.executeQuery(sql)){
+
+			try (PrintStream out = new PrintStream(new FileOutputStream("/home/inga/Documents/Uni/NLP4WEB/nlp/final_project/src/main/resources/db/textreal.txt"))) {
+				while (rs.next()) {
+					out.print(rs.getString("text").replaceAll("(\\r\\n|\\n)", " ") + "\t" + rs.getBoolean("real") + "\n");
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}    	
+    }
+    
+    public static void main(String[] args) {
+    	new DBUtils("jdbc:sqlite:/home/inga/Documents/Uni/NLP4WEB/nlp/final_project/src/main/resources/db/fakenewsnet.db").selectAllTextAndReal();
+    }
+    
     /**
      * select all rows in the warehouses table
      */
