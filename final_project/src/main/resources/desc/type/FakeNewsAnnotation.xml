@@ -40,6 +40,26 @@
           <description/>
           <rangeTypeName>uima.cas.Long</rangeTypeName>
         </featureDescription>
+      <featureDescription>
+          <name>title</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>body</name>
+          <description/>
+          <rangeTypeName>uima.cas.String</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>shareUserCount</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
+        <featureDescription>
+          <name>maxUserShareCount</name>
+          <description/>
+          <rangeTypeName>uima.cas.Long</rangeTypeName>
+        </featureDescription>
       </features>
     </typeDescription>
   </types>

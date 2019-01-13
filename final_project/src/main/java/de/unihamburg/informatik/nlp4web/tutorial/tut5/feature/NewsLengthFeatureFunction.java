@@ -15,6 +15,6 @@ public class NewsLengthFeatureFunction implements FeatureFunction {
 	@Override
 	public List<Feature> apply(Feature input) {	
 		String newsText = (String) input.getValue();	
-		return Collections.singletonList(new Feature("newsLength_"+newsText.length()));	
+		return Collections.singletonList(new Feature("newsLength", newsText.length()));
 	}
 }

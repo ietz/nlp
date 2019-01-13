@@ -1,5 +1,7 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.db;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.TrainTestSplit;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,6 +10,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FakeNewsNet {
+
+    private final double traintest = 0.8;
 
 	private List<UserModel> users;
 	private List<NewsModel> news;
@@ -61,5 +65,31 @@ public class FakeNewsNet {
 	private static <S, T> Map<S, T> index(List<T> items, Function<T, S> keyMapper) {
 		return items.stream().collect(Collectors.toMap(keyMapper, Function.identity()));
 	}
+
+	public List<NewsModel> getTrueNews() {
+		return this.getNews().stream().filter(NewsModel::isReal).collect(Collectors.toList());
+	}
+
+	public List<NewsModel> getFakeNews() {
+		return this.getNews().stream().filter(newsModel -> !newsModel.isReal()).collect(Collectors.toList());
+	}
+
+	public List<NewsModel> getTrain() {
+        TrainTestSplit<NewsModel> trueSplit = new TrainTestSplit<>(getTrueNews(), traintest);
+        TrainTestSplit<NewsModel> falseSplit = new TrainTestSplit<>(getFakeNews(), traintest);
+
+        ArrayList<NewsModel> result = new ArrayList<>(trueSplit.train);
+        result.addAll(falseSplit.train);
+        return result;
+    }
+
+    public List<NewsModel> getTest() {
+        TrainTestSplit<NewsModel> trueSplit = new TrainTestSplit<>(getTrueNews(), traintest);
+        TrainTestSplit<NewsModel> falseSplit = new TrainTestSplit<>(getFakeNews(), traintest);
+
+        ArrayList<NewsModel> result = new ArrayList<>(trueSplit.test);
+        result.addAll(falseSplit.test);
+        return result;
+    }
 
 }

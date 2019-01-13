@@ -3,6 +3,7 @@ package de.unihamburg.informatik.nlp4web.tutorial.tut5.reader;
 import java.io.IOException;
 import java.util.List;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.FeatureAnnotator;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.db.FakeNewsNet;
 import org.apache.uima.UimaContext;
 import org.apache.uima.cas.CASException;
@@ -33,37 +34,29 @@ public class DBReader
     @ConfigurationParameter(name = PARAM_LANGUAGE, defaultValue ="en", description = "default language for the text", mandatory = true)
     private String language;
 
-    public static final String PARAM_FROM = "FROM";
-    @ConfigurationParameter(name = PARAM_FROM, description = "The id from where to start (included)", mandatory = true)
-    private int from = 0;
+    @ConfigurationParameter(name = FeatureAnnotator.PARAM_IS_TRAINING, mandatory = true)
+    private boolean isTrain;
 
-    public static final String PARAM_TO = "TO";
-    @ConfigurationParameter(name = PARAM_TO, description = "The id where to end (not included)", mandatory = true)
-    private int to = 0;
-    
-    int i = 0;
-    int size = 0;
-    List<NewsModel> news;
+    private int i;
+    private List<NewsModel> news;
     
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
         super.initialize(context);
 
+        i = 0;
         FakeNewsNet newsNet = FakeNewsNet.load(db);
-        this.news = newsNet.getNews();
-
-        i = from;
-        size = to;
+        this.news = isTrain ? newsNet.getTrain() : newsNet.getTest();
     }
 
     @Override
     public boolean hasNext() throws IOException, CollectionException {
-        return i < size;
+        return i < this.news.size();
     }
 
     @Override
     public Progress[] getProgress() {
-        return new Progress[] { new ProgressImpl(i, size, Progress.ENTITIES) };
+        return new Progress[] { new ProgressImpl(i, this.news.size(), Progress.ENTITIES) };
     }
 
     @Override

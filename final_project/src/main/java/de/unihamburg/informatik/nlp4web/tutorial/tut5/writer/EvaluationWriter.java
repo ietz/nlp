@@ -1,12 +1,15 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.writer;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.evaluation.Scorekeeper;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
+import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.Level;
-
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
+import org.apache.uima.util.Logger;
 
 /**
  * The AnnotationWriter can be used to print Annotations in the text.<br>
@@ -18,24 +21,37 @@ public class EvaluationWriter extends JCasConsumer_ImplBase {
 	
 	public static final String LF = System.getProperty("line.separator");
 
-	public void process(JCas jcas) throws AnalysisEngineProcessException {
-		StringBuilder sb = new StringBuilder();
-		sb.append(LF);
-		sb.append("=== Evaluation ===");
-		sb.append(LF);
-        
-        for (FakeNewsAnnotation fna : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {
-            sb.append("ID: " + fna.getId());
-            sb.append(LF);
-            sb.append("GoldValue " + (fna.getGoldValue() ? "REAL" : "FAKE"));
-            sb.append(LF);
-            sb.append("PredictedValue " + (fna.getPredictedValue() ? "REAL" : "FAKE"));
-            sb.append(LF);
-        }
+	int tot = 0;
+	int corr = 0;
 
-		sb.append(LF);
+	private Scorekeeper scorekeeper;
 
-		getContext().getLogger().log(Level.INFO, sb.toString());
+	private Logger logger;
+
+	@Override
+	public void initialize(UimaContext context) throws ResourceInitializationException {
+		super.initialize(context);
+
+		logger = getLogger();
+		this.scorekeeper = new Scorekeeper();
 	}
 
+
+	@Override
+	public void process(JCas jCas) throws AnalysisEngineProcessException {
+		for (FakeNewsAnnotation fakeNewsAnnotation : JCasUtil.select(jCas, FakeNewsAnnotation.class)) {
+			boolean predicted = fakeNewsAnnotation.getPredictedValue();
+			boolean gold = fakeNewsAnnotation.getGoldValue();
+
+			this.scorekeeper.track(gold, predicted);
+		}
+
+	}
+
+	@Override
+	public void collectionProcessComplete() throws AnalysisEngineProcessException {
+		super.collectionProcessComplete();
+
+		this.scorekeeper.logResults(logger, "Test");
+	}
 }

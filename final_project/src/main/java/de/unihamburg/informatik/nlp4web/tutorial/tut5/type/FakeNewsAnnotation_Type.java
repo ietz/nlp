@@ -11,7 +11,7 @@ import org.apache.uima.cas.Feature;
 import org.apache.uima.jcas.tcas.Annotation_Type;
 
 /** 
- * Updated by JCasGen Sun Jan 06 22:38:48 CET 2019
+ * Updated by JCasGen Sun Jan 13 17:04:12 CET 2019
  * @generated */
 public class FakeNewsAnnotation_Type extends Annotation_Type {
   /** @generated */
@@ -165,6 +165,102 @@ public class FakeNewsAnnotation_Type extends Annotation_Type {
     ll_cas.ll_setLongValue(addr, casFeatCode_shareCount, v);}
     
   
+ 
+  /** @generated */
+  final Feature casFeat_title;
+  /** @generated */
+  final int     casFeatCode_title;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getTitle(int addr) {
+        if (featOkTst && casFeat_title == null)
+      jcas.throwFeatMissing("title", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_title);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setTitle(int addr, String v) {
+        if (featOkTst && casFeat_title == null)
+      jcas.throwFeatMissing("title", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    ll_cas.ll_setStringValue(addr, casFeatCode_title, v);}
+    
+  
+ 
+  /** @generated */
+  final Feature casFeat_body;
+  /** @generated */
+  final int     casFeatCode_body;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public String getBody(int addr) {
+        if (featOkTst && casFeat_body == null)
+      jcas.throwFeatMissing("body", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return ll_cas.ll_getStringValue(addr, casFeatCode_body);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setBody(int addr, String v) {
+        if (featOkTst && casFeat_body == null)
+      jcas.throwFeatMissing("body", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    ll_cas.ll_setStringValue(addr, casFeatCode_body, v);}
+    
+  
+ 
+  /** @generated */
+  final Feature casFeat_shareUserCount;
+  /** @generated */
+  final int     casFeatCode_shareUserCount;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public long getShareUserCount(int addr) {
+        if (featOkTst && casFeat_shareUserCount == null)
+      jcas.throwFeatMissing("shareUserCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return ll_cas.ll_getLongValue(addr, casFeatCode_shareUserCount);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setShareUserCount(int addr, long v) {
+        if (featOkTst && casFeat_shareUserCount == null)
+      jcas.throwFeatMissing("shareUserCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    ll_cas.ll_setLongValue(addr, casFeatCode_shareUserCount, v);}
+    
+  
+ 
+  /** @generated */
+  final Feature casFeat_maxUserShareCount;
+  /** @generated */
+  final int     casFeatCode_maxUserShareCount;
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @return the feature value 
+   */ 
+  public long getMaxUserShareCount(int addr) {
+        if (featOkTst && casFeat_maxUserShareCount == null)
+      jcas.throwFeatMissing("maxUserShareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    return ll_cas.ll_getLongValue(addr, casFeatCode_maxUserShareCount);
+  }
+  /** @generated
+   * @param addr low level Feature Structure reference
+   * @param v value to set 
+   */    
+  public void setMaxUserShareCount(int addr, long v) {
+        if (featOkTst && casFeat_maxUserShareCount == null)
+      jcas.throwFeatMissing("maxUserShareCount", "de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation");
+    ll_cas.ll_setLongValue(addr, casFeatCode_maxUserShareCount, v);}
+    
+  
 
 
 
@@ -200,6 +296,22 @@ public class FakeNewsAnnotation_Type extends Annotation_Type {
  
     casFeat_shareCount = jcas.getRequiredFeatureDE(casType, "shareCount", "uima.cas.Long", featOkTst);
     casFeatCode_shareCount  = (null == casFeat_shareCount) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_shareCount).getCode();
+
+ 
+    casFeat_title = jcas.getRequiredFeatureDE(casType, "title", "uima.cas.String", featOkTst);
+    casFeatCode_title  = (null == casFeat_title) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_title).getCode();
+
+ 
+    casFeat_body = jcas.getRequiredFeatureDE(casType, "body", "uima.cas.String", featOkTst);
+    casFeatCode_body  = (null == casFeat_body) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_body).getCode();
+
+ 
+    casFeat_shareUserCount = jcas.getRequiredFeatureDE(casType, "shareUserCount", "uima.cas.Long", featOkTst);
+    casFeatCode_shareUserCount  = (null == casFeat_shareUserCount) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_shareUserCount).getCode();
+
+ 
+    casFeat_maxUserShareCount = jcas.getRequiredFeatureDE(casType, "maxUserShareCount", "uima.cas.Long", featOkTst);
+    casFeatCode_maxUserShareCount  = (null == casFeat_maxUserShareCount) ? JCas.INVALID_FEATURE_CODE : ((FeatureImpl)casFeat_maxUserShareCount).getCode();
 
   }
 }

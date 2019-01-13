@@ -1,5 +1,6 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.cas.CAS;
@@ -13,8 +14,20 @@ import org.apache.uima.util.Logger;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class DBAnnotator extends JCasAnnotator_ImplBase {
-	
+
+	public static final String PARAM_STOP_WORDS = "stopwords";
+	@ConfigurationParameter(name = PARAM_STOP_WORDS,
+			description = "Stop words for the language",
+			mandatory = true)
+	private File stopwordFile;
+
+	List<String> stopWords = new ArrayList<>();
+
     public static final String PARAM_VIEW = "VIEW";
     @ConfigurationParameter(name = PARAM_VIEW, description = "The view to read from", mandatory = true)
     private String view;
@@ -26,6 +39,20 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 			throws ResourceInitializationException {
 		super.initialize(context);
 		logger = context.getLogger();
+
+		if(stopwordFile == null) {
+			stopWords = new ArrayList<>();
+		}
+		else {
+			try {
+				for (String stopword: FileUtils.readFileToString(stopwordFile, "UTF-8").split("[\\s\n]")) {
+					stopWords.add(stopword);
+				}
+			}
+			catch (Exception e) {
+				stopWords = new ArrayList<>();
+			}
+		}
 	}
 
 	@Override
@@ -86,13 +113,23 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 					fnAnnotation.setSource(splitted[1]);
 					break;
 				case "--TITLE--":
-					newsText.append(splitted[1] + "\n");
+					// we need the original title here wähä
+					fnAnnotation.setTitle(splitted[1]);
+					newsText.append(preprocessed(splitted[1] + "\n"));
 					break;
 				case "--TEXT--":
-					newsText.append(splitted[1]);
+					// we need the original body text here
+					fnAnnotation.setBody(splitted[1]);
+					newsText.append(preprocessed(splitted[1]));
 					break;
 				case "--SHARECOUNT--":
 					fnAnnotation.setShareCount(Long.parseLong(splitted[1]));
+					break;
+				case "--SHAREUSERCOUNT--":
+					fnAnnotation.setShareUserCount(Long.parseLong(splitted[1]));
+					break;
+				case "--MAXUSERSHARES--":
+					fnAnnotation.setMaxUserShareCount(Long.parseLong(splitted[1]));
 					break;
 				default:
 					break;
@@ -102,72 +139,15 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 		fnAnnotation.setBegin(0);
 		fnAnnotation.setEnd(newsText.length());
 		fnAnnotation.addToIndexes();
-		
-//			// new sentence if there's a new line
-//			if (line.equals("")) {
-//				if (sentence != null && token != null) {
-//					terminateSentence(sentence, token, docText);
-//					docText.append("\n");
-//					idx++;
-//				}
-//				//init new sentence with the next recognized token
-//				initSentence = true;
-//			} else {
-//				String[] tag = line.split("\\s");
-//				String word = tag[0];
-//				pos = tag.length >= 2 ? tag[1] : "";
-//				docText.append(word);
-//				if (!word.matches("^(\\p{Punct}).*")) {
-//					token = new Token(docView, idx, idx + word.length());
-//					posTag = new POS(docView, idx, idx + word.length());
-//
-//					docText.append(" ");
-//					idx++;
-//				} else {
-//					if ((docText.length() - word.length()) > 0
-//							&& (docText.charAt(idx - word.length()) == ' ')) {
-//						docText.deleteCharAt(idx - word.length());
-//						idx--;
-//					}
-//					token = new Token(docView, idx, idx + word.length());
-//					posTag = new POS(docView, idx, idx + word.length());
-//				}
-//				//start new sentence
-//				if (initSentence) {
-//					sentence = new Sentence(docView);
-//					sentence.setBegin(token.getBegin());
-//					initSentence = false;
-//				}
-//				//increment actual index of text
-//				idx += word.length();
-//				//set POS value and add POS to the token and to the index
-//				posTag.setPosValue(pos);
-//				token.setPos(posTag);
-//				token.addToIndexes();
-//				logger.log(
-//						Level.FINE,
-//						"Token: ["
-//								+ docText.substring(token.getBegin(),
-//										token.getEnd()) + "]"
-//								+ token.getBegin() + "\t" + token.getEnd());
-//
-//			}
-//		}
-//		if (sentence != null && token != null) {
-//			terminateSentence(sentence, token, docText);
-//		}
-//
-//		docView.setSofaDataString(docText.toString(), "text/plain");
 	}
 
-//	private void terminateSentence(Sentence sentence, Token token,StringBuffer docText){
-//		sentence.setEnd(token.getEnd());
-//		sentence.addToIndexes();
-//		logger.log(
-//				Level.FINE,
-//				"Sentence:["
-//						+ docText.substring(sentence.getBegin(),
-//								sentence.getEnd()) + "]\t"
-//						+ sentence.getBegin() + "\t" + sentence.getEnd());
-//	}
+
+	String preprocessed(String aTitle) {
+
+		for(String stopWord:stopWords) {
+			aTitle = aTitle.replace(" "+stopWord+" ", " ");
+		};
+		return aTitle.replaceAll("[^a-zA-Z0-9]", " ").replace("  ", " ");
+	}
+
 }

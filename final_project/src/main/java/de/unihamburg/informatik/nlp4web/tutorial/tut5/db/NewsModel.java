@@ -96,6 +96,14 @@ public class NewsModel {
 		return this.shares.stream().mapToLong(Share::getCount).sum();
 	}
 
+	public long getShareUserCount() {
+		return this.shares.size();
+	}
+
+	public long getMaxUserShares() {
+		return this.shares.stream().mapToLong(Share::getCount).max().orElse(0);
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -109,6 +117,8 @@ public class NewsModel {
 		builder.append("--TEXT--\t"+text+"\n");
 		builder.append("--WEBURL--\t"+url+"\n");
 		builder.append("--SHARECOUNT--\t"+this.getShareCount()+"\n");
+		builder.append("--SHAREUSERCOUNT--\t"+this.getShareCount()+"\n");
+		builder.append("--MAXUSERSHARES--\t"+this.getMaxUserShares()+"\n");
 		return builder.toString();
 	}
 }
