@@ -1,11 +1,9 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.db;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.TrainTestSplit;
+import org.cleartk.ml.jar.Train;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -75,20 +73,16 @@ public class FakeNewsNet {
 	}
 
 	public List<NewsModel> getTrain() {
-        TrainTestSplit<NewsModel> trueSplit = new TrainTestSplit<>(getTrueNews(), traintest);
-        TrainTestSplit<NewsModel> falseSplit = new TrainTestSplit<>(getFakeNews(), traintest);
-
-        ArrayList<NewsModel> result = new ArrayList<>(trueSplit.train);
-        result.addAll(falseSplit.train);
+        ArrayList<NewsModel> result = new ArrayList<>();
+        result.addAll(TrainTestSplit.split(getTrueNews()).train);
+        result.addAll(TrainTestSplit.split(getFakeNews()).train);
         return result;
     }
 
     public List<NewsModel> getTest() {
-        TrainTestSplit<NewsModel> trueSplit = new TrainTestSplit<>(getTrueNews(), traintest);
-        TrainTestSplit<NewsModel> falseSplit = new TrainTestSplit<>(getFakeNews(), traintest);
-
-        ArrayList<NewsModel> result = new ArrayList<>(trueSplit.test);
-        result.addAll(falseSplit.test);
+        ArrayList<NewsModel> result = new ArrayList<>();
+		result.addAll(TrainTestSplit.split(getTrueNews()).test);
+		result.addAll(TrainTestSplit.split(getFakeNews()).test);
         return result;
     }
 
