@@ -14,6 +14,7 @@ import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
 import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
+import org.cleartk.ml.mallet.MalletCrfStringOutcomeDataWriter;
 import org.cleartk.util.cr.FilesCollectionReader;
 
 import de.tudarmstadt.ukp.dkpro.core.snowball.SnowballStemmer;
@@ -57,9 +58,11 @@ public class ExecuteNER {
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
         String modelDirectory = "src/test/resources/model/";
-        String language = "de";
-        File nerTrain = new File("src/main/resources/ner/ner_eng_50000.train");
-        File nerTest = new File("src/main/resources/ner/ner_eng_20000.dev");
+        String language = "en";
+        File nerTrain = new File("src/main/resources/ner/ner_eng_full.train");
+        File nerTest = new File("src/main/resources/ner/ner_eng.test");
+        //File nerTrain = new File("src/main/resources/ner/ner_eng_50000.train");
+        //File nerTest = new File("src/main/resources/ner/ner_eng_20000.dev");
         new File(modelDirectory).mkdirs();
         writeModel(nerTrain, modelDirectory, language);
         trainModel(modelDirectory);
