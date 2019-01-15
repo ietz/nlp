@@ -34,7 +34,7 @@ public class Scorekeeper {
 
         sb.append("\tgtrue\tgfalse\n");
         sb.append(String.format("ptrue\t%d\t%d\n", tp, fp));
-        sb.append(String.format("pfalse\t%d\t%d\n\n\n", fn, fp));
+        sb.append(String.format("pfalse\t%d\t%d\n\n\n", fn, tn));
 
 
         double accuracy = 1.0 * (tp + tn) / (tp + tn + fp + fn);
