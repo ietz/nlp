@@ -103,13 +103,13 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
             CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
                     tfIdfExtractor,
                     simExtractor,
-                    minmaxExtractor,
+                    minmaxExtractor
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
-                    newsTextFeatureExtractor
+//                    newsTextFeatureExtractor
             );
 
             this.extractor = combinedExtractor1;
@@ -197,13 +197,7 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
             }
         }
-
-    }
-
-    @Override
-    public void collectionProcessComplete() throws AnalysisEngineProcessException {
-        super.collectionProcessComplete();
-
+        
         if (this.isTraining()) {
 
             try {
@@ -212,6 +206,14 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
                 e.printStackTrace();
             }
         }
+
+    }
+
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        super.collectionProcessComplete();
+
+        
     }
 
     /**

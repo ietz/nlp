@@ -107,7 +107,7 @@ public class NewsModel {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("--NEWS--\n");
+		builder.append("--NEWS--\t--NEWS--\n");
 		builder.append("--NEWSID--\t"+id+"\n");
 		builder.append("--AUTHORS--\t"+authors+"\n");
 		builder.append("--KEYWORDS--\t"+keywords+"\n");
@@ -119,6 +119,7 @@ public class NewsModel {
 		builder.append("--SHARECOUNT--\t"+this.getShareCount()+"\n");
 		builder.append("--SHAREUSERCOUNT--\t"+this.getShareCount()+"\n");
 		builder.append("--MAXUSERSHARES--\t"+this.getMaxUserShares()+"\n");
+		builder.append("--ENDNEWS--\t--ENDNEWS--\n");
 		return builder.toString();
 	}
 }
