@@ -1,11 +1,12 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.db;
 
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.TrainTestSplit;
-import org.cleartk.ml.jar.Train;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.TrainTestSplit;
 
 public class FakeNewsNet {
 

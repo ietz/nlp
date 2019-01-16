@@ -100,19 +100,21 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
 
             /** Collecting all features in a CombinedExtractor1<T> **/
-//            CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
-//                    //tfIdfExtractor,
-//                    //simExtractor
-                    //minmaxExtractor,
+
+            CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
+                    tfIdfExtractor,
+                    simExtractor,
+                    minmaxExtractor
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
-//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
-//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
-//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
 //                    newsTextFeatureExtractor
-      //      );
-            
-            this.extractor = simExtractor;
+            );
+
+            this.extractor = combinedExtractor1;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -197,13 +199,7 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
             }
         }
-
-    }
-
-    @Override
-    public void collectionProcessComplete() throws AnalysisEngineProcessException {
-        super.collectionProcessComplete();
-
+        
         if (this.isTraining()) {
 
             try {
@@ -212,6 +208,14 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
                 e.printStackTrace();
             }
         }
+
+    }
+
+    @Override
+    public void collectionProcessComplete() throws AnalysisEngineProcessException {
+        super.collectionProcessComplete();
+
+        
     }
 
     /**

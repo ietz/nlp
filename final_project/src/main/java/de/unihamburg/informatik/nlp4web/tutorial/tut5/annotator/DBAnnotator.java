@@ -1,5 +1,9 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -8,15 +12,9 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasAnnotator_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.jcas.cas.StringList;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.uima.util.Logger;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DBAnnotator extends JCasAnnotator_ImplBase {
 
@@ -32,13 +30,10 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
     @ConfigurationParameter(name = PARAM_VIEW, description = "The view to read from", mandatory = true)
     private String view;
 	
-	private Logger logger = null;
-
 	@Override
 	public void initialize(UimaContext context)
 			throws ResourceInitializationException {
 		super.initialize(context);
-		logger = context.getLogger();
 
 		if(stopwordFile == null) {
 			stopWords = new ArrayList<>();
@@ -84,13 +79,13 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 //
 		String[] tokens = dbView.split("(\r\n|\n)");
 //		Sentence sentence = null;
-//		int idx = 0;
+		int idx = 0;
 //		Token token = null;
 //		POS posTag;
 //		String pos;
 //		boolean initSentence = false;
 		
-		FakeNewsAnnotation fnAnnotation = new FakeNewsAnnotation(docView);
+		FakeNewsAnnotation fnAnnotation = null;
 		StringBuffer newsText = new StringBuffer();
 		for (String line : tokens) {
 			String[] splitted = line.split("\t");
@@ -98,6 +93,15 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 				continue;
 			
 			switch(splitted[0]) {
+				case "--NEWS--":
+					fnAnnotation = new FakeNewsAnnotation(docView);
+					break;
+				case "--ENDNEWS--":
+					fnAnnotation.setBegin(idx);
+					fnAnnotation.setEnd(newsText.length());
+					fnAnnotation.addToIndexes();
+					idx = newsText.length();
+					break;
 				case "--NEWSID--":
 					fnAnnotation.setId(Long.parseLong(splitted[1]));
 					break;
@@ -120,7 +124,7 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 				case "--TEXT--":
 					// we need the original body text here
 					fnAnnotation.setBody(splitted[1]);
-					newsText.append(preprocessed(splitted[1]));
+//					newsText.append(preprocessed(splitted[1] + "\n"));
 					break;
 				case "--SHARECOUNT--":
 					fnAnnotation.setShareCount(Long.parseLong(splitted[1]));
@@ -136,9 +140,6 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 			}
 		}
 		docView.setSofaDataString(newsText.toString(), "text/plain");
-		fnAnnotation.setBegin(0);
-		fnAnnotation.setEnd(newsText.length());
-		fnAnnotation.addToIndexes();
 	}
 
 
@@ -147,7 +148,7 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 		for(String stopWord:stopWords) {
 			aTitle = aTitle.replace(" "+stopWord+" ", " ");
 		};
-		return aTitle.replaceAll("[^a-zA-Z0-9]", " ").replace("  ", " ");
+		return aTitle.replaceAll("[^a-zA-Z0-9.!?]", " ").replace("  ", " ");
 	}
 
 }

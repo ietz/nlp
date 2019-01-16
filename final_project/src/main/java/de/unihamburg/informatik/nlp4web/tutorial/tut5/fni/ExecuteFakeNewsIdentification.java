@@ -9,17 +9,12 @@ import java.io.IOException;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
-import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.util.Level;
-import org.cleartk.ml.Feature;
-import org.cleartk.ml.crfsuite.CrfSuiteStringOutcomeDataWriter;
 import org.cleartk.ml.feature.transform.InstanceDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
 import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
 
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.DBAnnotator;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.FeatureAnnotator;
