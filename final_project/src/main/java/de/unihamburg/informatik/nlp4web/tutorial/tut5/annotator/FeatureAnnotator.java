@@ -78,7 +78,7 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
         return f.toURI();
     }
 
-    private CombinedExtractor1<FakeNewsAnnotation> extractor;
+    private FeatureExtractor1<FakeNewsAnnotation> extractor;
 
     @Override
     public void initialize(UimaContext context) throws ResourceInitializationException {
@@ -100,19 +100,19 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
 
             /** Collecting all features in a CombinedExtractor1<T> **/
-            CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
-                    tfIdfExtractor,
-                    simExtractor,
-                    minmaxExtractor,
+//            CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
+//                    //tfIdfExtractor,
+//                    //simExtractor
+                    //minmaxExtractor,
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
-                    newsTextFeatureExtractor
-            );
-
-            this.extractor = combinedExtractor1;
+//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
+//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
+//                    new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
+//                    newsTextFeatureExtractor
+      //      );
+            
+            this.extractor = simExtractor;
         } catch (IOException e) {
             e.printStackTrace();
         }
