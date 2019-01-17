@@ -14,6 +14,8 @@ import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 
 public class DBAnnotator extends JCasAnnotator_ImplBase {
@@ -85,6 +87,8 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 //		String pos;
 //		boolean initSentence = false;
 		
+		Token token = null;
+		Sentence sentence = null;
 		FakeNewsAnnotation fnAnnotation = null;
 		StringBuffer newsText = new StringBuffer();
 		for (String line : tokens) {
@@ -94,12 +98,16 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 			
 			switch(splitted[0]) {
 				case "--NEWS--":
+					sentence = new Sentence(docView);
 					fnAnnotation = new FakeNewsAnnotation(docView);
 					break;
 				case "--ENDNEWS--":
 					fnAnnotation.setBegin(idx);
-					fnAnnotation.setEnd(newsText.length());
+					fnAnnotation.setEnd(newsText.length()-1);
 					fnAnnotation.addToIndexes();
+					sentence.setBegin(idx);
+					sentence.setEnd(newsText.length()-1);
+					sentence.addToIndexes();
 					idx = newsText.length();
 					break;
 				case "--NEWSID--":
@@ -119,7 +127,25 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 				case "--TITLE--":
 					// we need the original title here wähä
 					fnAnnotation.setTitle(splitted[1]);
-					newsText.append(preprocessed(splitted[1] + "\n"));
+					String text = preprocessed(splitted[1]) + "\n";
+					newsText.append(text);
+					
+	                String[] words = text.split("\\s+");
+	                int current = 0;
+	                int position = 0;
+	                int tokenStart = 0;
+	                int tokenEnd = 0;
+	                
+	                for (String word : words){
+	                	do{
+	                		position = text.indexOf(word, current);
+	                	} while (position < current);
+	                	current = position + 1;
+	                	tokenStart = idx + position;
+	                	tokenEnd = tokenStart + word.length();
+	                	token = new Token(docView, tokenStart, tokenEnd);
+	                	token.addToIndexes();
+	                }
 					break;
 				case "--TEXT--":
 					// we need the original body text here

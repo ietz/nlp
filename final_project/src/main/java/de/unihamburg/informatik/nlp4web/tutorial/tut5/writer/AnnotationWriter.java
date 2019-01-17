@@ -1,11 +1,11 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.writer;
 
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.cas.CASException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
+import org.apache.uima.jcas.tcas.Annotation;
 import org.apache.uima.util.Level;
 
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
@@ -36,43 +36,46 @@ public class AnnotationWriter extends JCasConsumer_ImplBase {
 		sb.append(LF);
 		sb.append("-- DB Text --");
 		sb.append(LF);
-		try {
-			sb.append(jcas.getView(view).getDocumentText());
-		} catch (CASException e) {
-			// TODO Auto-generated catch block
-			sb.append("NO DB VIEW :(((");
-		}
+//		try {
+//			sb.append(jcas.getView(view).getDocumentText());
+//		} catch (CASException e) {
+//			// TODO Auto-generated catch block
+//			sb.append("NO DB VIEW :(((");
+//		}
 		sb.append(LF);
 		sb.append("-- Annotations --");
 		sb.append(LF);
 		
-//        for (Annotation a : JCasUtil.select(jcas, Annotation.class)) {
-//            sb.append("[" + a.getType().getShortName() + "] ");
-//            sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
-//            sb.append(a.getCoveredText());
-//            sb.append(LF);
-//        }
+        for (Annotation a : JCasUtil.select(jcas, Annotation.class)) {
         
-        for (FakeNewsAnnotation fna : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {
-            sb.append("[" + fna.getType().getShortName() + "] ");
-            sb.append("(" + fna.getBegin() + ", " + fna.getEnd() + ") ");
-            sb.append(fna.getCoveredText());
+            sb.append("[" + a.getType().getShortName() + "] ");
+            sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
+            sb.append(a.getCoveredText());
             sb.append(LF);
-            sb.append("ID: " + fna.getId());
-            sb.append(LF);
-            sb.append("Real? " + fna.getGoldValue());
-            sb.append(LF);
-            sb.append("Source: " + fna.getSource());
-            sb.append(LF);
-            sb.append("Authors: " + fna.getAuthors());
-            sb.append(LF);
-            sb.append("Shares: " + fna.getShareCount());
-            sb.append(LF);
-			sb.append("ORG Title: " + fna.getTitle());
-			sb.append(LF);
-			sb.append("ORG Body: " + fna.getBody());
-			sb.append(LF);
+
         }
+//        
+//		
+//        for (FakeNewsAnnotation fna : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {
+//            sb.append("[" + fna.getType().getShortName() + "] ");
+//            sb.append("(" + fna.getBegin() + ", " + fna.getEnd() + ") ");
+//            sb.append(fna.getCoveredText());
+//            sb.append(LF);
+//            sb.append("ID: " + fna.getId());
+//            sb.append(LF);
+//            sb.append("Real? " + fna.getGoldValue());
+//            sb.append(LF);
+//            sb.append("Source: " + fna.getSource());
+//            sb.append(LF);
+//            sb.append("Authors: " + fna.getAuthors());
+//            sb.append(LF);
+//            sb.append("Shares: " + fna.getShareCount());
+//            sb.append(LF);
+//			sb.append("ORG Title: " + fna.getTitle());
+//			sb.append(LF);
+//			sb.append("ORG Body: " + fna.getBody());
+//			sb.append(LF);
+//        }
 
 		sb.append(LF);
 

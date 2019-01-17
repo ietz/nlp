@@ -5,31 +5,31 @@ import static org.apache.uima.fit.util.JCasUtil.select;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.CountAnnotationExtractor;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
-import org.apache.xpath.operations.Bool;
-import org.cleartk.ml.*;
-import org.cleartk.ml.feature.extractor.*;
+import org.cleartk.ml.CleartkAnnotator;
+import org.cleartk.ml.CleartkProcessingException;
+import org.cleartk.ml.Instance;
+import org.cleartk.ml.feature.extractor.CleartkExtractor;
+import org.cleartk.ml.feature.extractor.CombinedExtractor1;
+import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
+import org.cleartk.ml.feature.extractor.FeatureExtractor1;
 import org.cleartk.ml.feature.function.FeatureFunctionExtractor;
-
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.NewsLengthFeatureFunction;
-import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 import org.cleartk.ml.feature.transform.InstanceStream;
 import org.cleartk.ml.feature.transform.extractor.CentroidTfidfSimilarityExtractor;
 import org.cleartk.ml.feature.transform.extractor.MinMaxNormalizationExtractor;
 import org.cleartk.ml.feature.transform.extractor.TfidfExtractor;
 import org.cleartk.ml.libsvm.LibSvmStringOutcomeDataWriter;
+
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.CountAnnotationExtractor;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.NewsLengthFeatureFunction;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 
 
 public class FeatureAnnotator extends CleartkAnnotator<String> {

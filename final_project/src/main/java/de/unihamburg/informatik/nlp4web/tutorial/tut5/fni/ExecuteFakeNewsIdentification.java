@@ -9,11 +9,13 @@ import java.io.IOException;
 
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
+import org.apache.uima.fit.testing.util.HideOutput;
 import org.apache.uima.util.Level;
 import org.cleartk.ml.feature.transform.InstanceDataWriter;
 import org.cleartk.ml.jar.DefaultDataWriterFactory;
 import org.cleartk.ml.jar.DirectoryDataWriterFactory;
 import org.cleartk.ml.jar.GenericJarClassifierFactory;
+import org.cleartk.ml.jar.JarClassifierBuilder;
 
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordSegmenter;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.DBAnnotator;
@@ -36,7 +38,7 @@ public class ExecuteFakeNewsIdentification {
         	createEngine(DBAnnotator.class,
         				DBAnnotator.PARAM_VIEW, "DB-VIEW",
                         DBAnnotator.PARAM_STOP_WORDS, stopwordsFile),
-    		createEngine(StanfordSegmenter.class),
+//    		createEngine(StanfordSegmenter.class),
 //            createEngine(StanfordPosTagger.class),
 //            createEngine(StanfordLemmatizer.class),
         	createEngine(AnnotationWriter.class,
@@ -49,11 +51,17 @@ public class ExecuteFakeNewsIdentification {
         );
     }
 
-    public static void trainModel(File modelDirectory) throws Exception {
-        org.cleartk.ml.jar.Train.main(modelDirectory);
+    public static void trainModel(File modelDirectory, String[] arguments) throws Exception {
+        /** Stage 3: Train and write model
+         * Now that the features have been extracted and normalized, we can proceed
+         *in running machine learning to train and package a model **/
 
+        System.err.println("Train model and write model.jar file.");
+        HideOutput hider = new HideOutput();
+        JarClassifierBuilder.trainAndPackage(modelDirectory, arguments);
+        hider.restoreOutput();
     }
-
+    
     public static void classifyTestFile(String db, String language, File modelDirectory, File stopwordsFile) throws UIMAException, IOException {
         runPipeline(
             	createReader(DBReader.class,
@@ -81,17 +89,21 @@ public class ExecuteFakeNewsIdentification {
     }
 
     public static void main(String[] args) throws Exception {
+        String[] trainingArguments = new String[]{"-t", "0"};
         long start = System.currentTimeMillis();
-        File modelDirectory = new File("src/test/resources/model/");
-        modelDirectory.mkdirs();
+        
+        String modelPath = "src/test/resources/model/";
+        new File(modelPath).mkdirs();
+        File modelDirectory = new File(modelPath);
 
         File stopWordsFile = new File("src/main/resources/stopwords.txt");
 
         String language = "en";
         String dbpath = new ExecuteFakeNewsIdentification().getResourceFilePath("db/fakenewsnet.db");
         String db = "jdbc:sqlite:"+dbpath;
+        
         writeModel(db, language, modelDirectory, stopWordsFile);
-        trainModel(modelDirectory);
+        trainModel(modelDirectory, trainingArguments);
         classifyTestFile(db, language, modelDirectory, stopWordsFile);
         long now = System.currentTimeMillis();
         UIMAFramework.getLogger().log(Level.INFO, "Time: " + (now - start) + "ms");
