@@ -1,5 +1,6 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.writer;
 
+import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.component.JCasConsumer_ImplBase;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -46,7 +47,7 @@ public class AnnotationWriter extends JCasConsumer_ImplBase {
 		sb.append("-- Annotations --");
 		sb.append(LF);
 		
-        for (Annotation a : JCasUtil.select(jcas, Annotation.class)) {
+        for (Annotation a : JCasUtil.select(jcas, Sentence.class)) {
         
             sb.append("[" + a.getType().getShortName() + "] ");
             sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
@@ -54,6 +55,15 @@ public class AnnotationWriter extends JCasConsumer_ImplBase {
             sb.append(LF);
 
         }
+
+		for (FakeNewsAnnotation a : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {
+
+			sb.append("[" + a.getType().getShortName() + "] ");
+			sb.append("(" + a.getBegin() + ", " + a.getEnd() + ") ");
+			sb.append(a.getCoveredText());
+			sb.append(LF);
+
+		}
 //        
 //		
 //        for (FakeNewsAnnotation fna : JCasUtil.select(jcas, FakeNewsAnnotation.class)) {

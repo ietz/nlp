@@ -14,10 +14,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.cleartk.ml.CleartkAnnotator;
 import org.cleartk.ml.CleartkProcessingException;
 import org.cleartk.ml.Instance;
-import org.cleartk.ml.feature.extractor.CleartkExtractor;
-import org.cleartk.ml.feature.extractor.CombinedExtractor1;
-import org.cleartk.ml.feature.extractor.CoveredTextExtractor;
-import org.cleartk.ml.feature.extractor.FeatureExtractor1;
+import org.cleartk.ml.feature.extractor.*;
 import org.cleartk.ml.feature.function.FeatureFunctionExtractor;
 import org.cleartk.ml.feature.transform.InstanceStream;
 import org.cleartk.ml.feature.transform.extractor.CentroidTfidfSimilarityExtractor;
@@ -104,10 +101,10 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
             CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
                     tfIdfExtractor,
                     simExtractor,
-                    minmaxExtractor
+                    minmaxExtractor,
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+                    new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
+                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
 //                    newsTextFeatureExtractor

@@ -3,7 +3,12 @@ package de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.CoreSentence;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.apache.commons.io.FileUtils;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
@@ -81,6 +86,7 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 //
 		String[] tokens = dbView.split("(\r\n|\n)");
 //		Sentence sentence = null;
+        int fakeidx = 0;
 		int idx = 0;
 //		Token token = null;
 //		POS posTag;
@@ -88,7 +94,7 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 //		boolean initSentence = false;
 		
 		Token token = null;
-		Sentence sentence = null;
+        Sentence sentence = null;
 		FakeNewsAnnotation fnAnnotation = null;
 		StringBuffer newsText = new StringBuffer();
 		for (String line : tokens) {
@@ -102,13 +108,10 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 					fnAnnotation = new FakeNewsAnnotation(docView);
 					break;
 				case "--ENDNEWS--":
-					fnAnnotation.setBegin(idx);
-					fnAnnotation.setEnd(newsText.length()-1);
+					fnAnnotation.setBegin(fakeidx);
+					fnAnnotation.setEnd(newsText.length());
 					fnAnnotation.addToIndexes();
-					sentence.setBegin(idx);
-					sentence.setEnd(newsText.length()-1);
-					sentence.addToIndexes();
-					idx = newsText.length();
+                    fakeidx = newsText.length();
 					break;
 				case "--NEWSID--":
 					fnAnnotation.setId(Long.parseLong(splitted[1]));
@@ -129,7 +132,12 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 					fnAnnotation.setTitle(splitted[1]);
 					String text = preprocessed(splitted[1]) + "\n";
 					newsText.append(text);
-					
+
+					// create sentence annotation
+                    sentence.setBegin(idx);
+                    sentence.setEnd(newsText.length()-1);
+                    sentence.addToIndexes();
+
 	                String[] words = text.split("\\s+");
 	                int current = 0;
 	                int position = 0;
@@ -146,11 +154,43 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 	                	token = new Token(docView, tokenStart, tokenEnd);
 	                	token.addToIndexes();
 	                }
+                    idx = newsText.length();
 					break;
 				case "--TEXT--":
-					// we need the original body text here
-					fnAnnotation.setBody(splitted[1]);
-//					newsText.append(preprocessed(splitted[1] + "\n"));
+					// we need the original body text here#
+                    fnAnnotation.setBody(splitted[1]);
+
+                    String bodytext = preprocessed(splitted[1]);
+
+
+                    Properties props = new Properties();
+                    // set the list of annotators to run
+                    props.setProperty("annotators", "tokenize,ssplit");
+                    // set a property for an annotator, in this case the coref annotator is being set to use the neural algorithm
+                    props.setProperty("coref.algorithm", "neural");
+                    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+
+                    // create a document object
+                    CoreDocument document = new CoreDocument(bodytext);
+                    // annnotate the document
+                    pipeline.annotate(document);
+                    // examples
+
+                    for(CoreLabel coretoken : document.tokens()) {
+                        Token myToken = new Token(docView, idx + coretoken.beginPosition(), idx + coretoken.endPosition());
+                        myToken.addToIndexes();
+                    }
+
+                    for(CoreSentence coresentence : document.sentences()) {
+                        int sentenceStart = coresentence.tokens().get(0).beginPosition();
+                        int sentenceEnd = coresentence.tokens().get(coresentence.tokens().size() -1).endPosition();
+
+                        Sentence mySentence = new Sentence(docView, idx + sentenceStart, idx + sentenceEnd);
+                        mySentence.addToIndexes();
+//                        idx = idx + coresentence.text().length() + 1;
+                    }
+					newsText.append(preprocessed(splitted[1]));
+                    idx = idx + bodytext.length();
 					break;
 				case "--SHARECOUNT--":
 					fnAnnotation.setShareCount(Long.parseLong(splitted[1]));
@@ -176,5 +216,4 @@ public class DBAnnotator extends JCasAnnotator_ImplBase {
 		};
 		return aTitle.replaceAll("[^a-zA-Z0-9.!?]", " ").replace("  ", " ");
 	}
-
 }
