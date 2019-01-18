@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.CapitalWordsFeatureFunction;
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
 import org.apache.uima.fit.descriptor.ConfigurationParameter;
@@ -90,6 +91,8 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
             CentroidTfidfSimilarityExtractor<String, FakeNewsAnnotation> simExtractor = initCentroidTfIdfSimilarityExtractor();
             MinMaxNormalizationExtractor<String, FakeNewsAnnotation> minmaxExtractor = initMinMaxExtractor();
 
+            CapitalWordsFeatureFunction<FakeNewsAnnotation> capsFunction = new CapitalWordsFeatureFunction<>();
+
             // covered text wirklich sinnvoll?
             FeatureExtractor1<FakeNewsAnnotation> newsTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
                     new NewsLengthFeatureFunction()
@@ -102,9 +105,10 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
                     tfIdfExtractor,
                     simExtractor,
                     minmaxExtractor,
+                    capsFunction,
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
                     new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount")
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
 //                    newsTextFeatureExtractor

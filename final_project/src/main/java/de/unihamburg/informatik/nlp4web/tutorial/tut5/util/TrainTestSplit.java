@@ -21,7 +21,7 @@ public class TrainTestSplit<T> {
 
     private TrainTestSplit(List<T> complete) {
     	List<T> dataset = new ArrayList<>(complete);
-		Collections.shuffle(dataset, new Random(5318008));
+		Collections.shuffle(dataset, new Random(7323));
 
         int index = (int) Math.floor(dataset.size() * SPLIT);
         this.train = dataset.subList(0, index);
