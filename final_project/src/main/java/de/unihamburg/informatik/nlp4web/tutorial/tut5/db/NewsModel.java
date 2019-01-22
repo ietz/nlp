@@ -15,7 +15,19 @@ public class NewsModel {
 	private String title;
 	private String url;
 	private List<Share> shares = new ArrayList<>();
-	
+
+	public NewsModel(String title, String text) {
+		this.id = 0l;
+		this.authors = null;
+		this.keywords = null;
+		this.publishDate = System.currentTimeMillis();
+		this.real = false;
+		this.source = null;
+		this.text = text.replaceAll("(\\r\\n|\\n)", " ");
+		this.title = title;
+		this.url = null;
+	}
+
 	public NewsModel(Long id, String authors, String keywords, long publishDate, boolean real, String source,
 			String text, String title, String url) {
 		this.id = id;

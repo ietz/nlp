@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Fredoka+One|Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/csshake/1.5.3/csshake.min.css">
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, input, textarea {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        main {
+            border: 1px solid black;
+            margin: auto;
+            width: 30rem;
+            padding: 1.5rem 2rem;
+            border-radius: 0.3rem;
+        }
+
+        #title, #body {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0.3rem 0.7rem;
+        }
+
+        #title {
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        #body {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        #submit {
+            display: block;
+            margin-left: auto;
+        }
+
+        button {
+            padding: 0.3rem 1rem;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .result {
+            background-color: black;
+            color: white;
+            padding: 2rem 10rem;
+            border-radius: 1rem;
+            font-size: 8rem;
+            font-family: 'Fredoka One', cursive;
+            transform: rotate(10deg);
+            text-align: center;
+            max-width: 40rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<main>
+    <input type="text" value="Donald Trump died" id="title" />
+    <textarea id="body" rows="5">Trump Trump Trump</textarea>
+    <button type="button" id="submit">Fake?</button>
+</main>
+
+<div class="overlay hidden">
+    <div class="result shake-opacity shake-constant">
+        $result;
+    </div>
+</div>
+
+<script>
+    const titleInput = document.querySelector('#title');
+    const bodyInput = document.querySelector('#body');
+    const overlay = document.querySelector('.overlay');
+    const resultOut = document.querySelector('.result');
+
+    const sumbmit = () => {
+        console.log("Test");
+        const title = titleInput.value;
+        const body = bodyInput.value;
+
+        postData('http://localhost:4567/isFake', {title, body})
+            .then(data => show(data))
+    .catch(err => show(err.message));
+    }
+
+    const show = (val) => {
+        console.log("SHOW VALUE", val);
+
+        if (typeof val === "boolean") {
+            resultOut.innerText = val ? 'REAL!' : 'FAKE!';
+        } else {
+            resultOut.innerText = val;
+        }
+        overlay.classList.remove('hidden');
+    }
+
+    const postData = (url, data) => {
+
+
+        return fetch(url, {
+            method: "POST",
+            mode: "cors",
+            credentials: "same-origin",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrer: "no-referrer",
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json());
+    }
+
+    const btn = document.querySelector('#submit');
+    btn.addEventListener("click", sumbmit);
+
+
+    const hideOverlay = () => {
+        overlay.classList.add('hidden');
+    }
+
+    overlay.addEventListener("click", hideOverlay);
+</script>
+
+</body>
+</html>

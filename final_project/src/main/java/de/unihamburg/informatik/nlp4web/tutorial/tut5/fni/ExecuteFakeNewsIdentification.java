@@ -7,6 +7,10 @@ import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
 import java.io.File;
 import java.io.IOException;
 
+import com.google.gson.Gson;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.reader.ConfigurationReader;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.OnlineRequestObject;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.OnlineResultWriter;
 import org.apache.uima.UIMAException;
 import org.apache.uima.UIMAFramework;
 import org.apache.uima.fit.testing.util.HideOutput;
@@ -23,6 +27,9 @@ import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.FeatureAnnotator
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.reader.DBReader;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.AnnotationWriter;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.EvaluationWriter;
+import spark.Filter;
+
+import static spark.Spark.*;
 
 public class ExecuteFakeNewsIdentification {
 
@@ -91,7 +98,7 @@ public class ExecuteFakeNewsIdentification {
     public static void main(String[] args) throws Exception {
         String[] trainingArguments = new String[]{"-t", "0"};
         long start = System.currentTimeMillis();
-        
+
         String modelPath = "src/test/resources/model/";
         new File(modelPath).mkdirs();
         File modelDirectory = new File(modelPath);
@@ -101,7 +108,7 @@ public class ExecuteFakeNewsIdentification {
         String language = "en";
         String dbpath = new ExecuteFakeNewsIdentification().getResourceFilePath("db/fakenewsnet.db");
         String db = "jdbc:sqlite:"+dbpath;
-        
+
         writeModel(db, language, modelDirectory, stopWordsFile);
         trainModel(modelDirectory, trainingArguments);
         classifyTestFile(db, language, modelDirectory, stopWordsFile);
