@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.AverageTokenLengthFeatureExtractor;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.CapitalWordsFeatureFunction;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.UniqueWordsFeatureExtractor;
 import org.apache.uima.UimaContext;
@@ -27,6 +28,8 @@ import org.cleartk.ml.libsvm.LibSvmStringOutcomeDataWriter;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.CountAnnotationExtractor;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.ExclamationMarkCountFeatureExtractor;
+import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.MaxTokenLengthFeatureExtractor;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.feature.NewsLengthFeatureFunction;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.type.FakeNewsAnnotation;
 
@@ -94,30 +97,36 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
             CapitalWordsFeatureFunction<FakeNewsAnnotation> capsFunction = new CapitalWordsFeatureFunction<>();
 			UniqueWordsFeatureExtractor<FakeNewsAnnotation> uniqueWordsFunction = new UniqueWordsFeatureExtractor<>();
+			ExclamationMarkCountFeatureExtractor<FakeNewsAnnotation> exclamationMarkCount = new ExclamationMarkCountFeatureExtractor<>();
+			AverageTokenLengthFeatureExtractor<FakeNewsAnnotation> averageTokenLength = new AverageTokenLengthFeatureExtractor<>();
+			MaxTokenLengthFeatureExtractor<FakeNewsAnnotation> maxTokenLength = new MaxTokenLengthFeatureExtractor<>();
 
 			// covered text wirklich sinnvoll?
-            FeatureExtractor1<FakeNewsAnnotation> newsTextFeatureExtractor = new FeatureFunctionExtractor<>(new CoveredTextExtractor<>(),
-                    new NewsLengthFeatureFunction()
-            );
+            NewsLengthFeatureFunction<FakeNewsAnnotation> newsLength = new NewsLengthFeatureFunction<>();
 
 
             /** Collecting all features in a CombinedExtractor1<T> **/
 
             CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
                     tfIdfExtractor,
-                    simExtractor,
-                    minmaxExtractor,
+                    //simExtractor,
+                    //minmaxExtractor,
                     capsFunction,
                     uniqueWordsFunction,
+                    exclamationMarkCount,
+                    newsLength,
+					averageTokenLength,
+					maxTokenLength
+            
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
-                    new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount")
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount"),
-//                    newsTextFeatureExtractor
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount")
+                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount")
             );
 
             this.extractor = combinedExtractor1;
+//            this.extractor = newsLength;
 
         } catch (IOException e) {
             e.printStackTrace();

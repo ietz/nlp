@@ -1,6 +1,5 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.feature;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,23 +10,30 @@ import org.apache.uima.jcas.tcas.Annotation;
 import org.cleartk.ml.Feature;
 import org.cleartk.ml.feature.extractor.CleartkExtractorException;
 import org.cleartk.ml.feature.extractor.FeatureExtractor1;
-import org.cleartk.ml.feature.function.FeatureFunction;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-/**
- * Checks weather the word contains a dash ( - )
- * It is assumed that the provided Feature is a String representing a single word.
- */
-public class NewsLengthFeatureFunction<T extends Annotation> implements FeatureExtractor1<T> {
-
+public class ExclamationMarkCountFeatureExtractor<T extends Annotation> implements FeatureExtractor1<T> {
+	
 	@Override
 	public List<Feature> extract(JCas view, T focusAnnotation) throws CleartkExtractorException {
 		long count = JCasUtil.selectCovered(Token.class, focusAnnotation)
 				.stream()
+				.filter(this::isExclamationMark)
 				.count();
-//		System.out.println(count);
 
-		return Collections.singletonList(new Feature("NewsLength", count));
+		return Collections.singletonList(new Feature("ExclamationMarkCount", count));
 	}
+
+	private boolean isExclamationMark(Annotation a) {
+		String text = a.getCoveredText();
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if (!(c == '!')) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }
