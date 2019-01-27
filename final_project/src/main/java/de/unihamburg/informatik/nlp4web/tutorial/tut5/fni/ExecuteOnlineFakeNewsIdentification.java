@@ -1,22 +1,27 @@
 package de.unihamburg.informatik.nlp4web.tutorial.tut5.fni;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
+import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
+import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
+import static spark.Spark.before;
+import static spark.Spark.externalStaticFileLocation;
+import static spark.Spark.options;
+import static spark.Spark.post;
+import static spark.Spark.staticFileLocation;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.uima.UIMAException;
+import org.cleartk.ml.jar.GenericJarClassifierFactory;
+
 import com.google.gson.Gson;
+
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.DBAnnotator;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.annotator.FeatureAnnotator;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.reader.ConfigurationReader;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.util.OnlineRequestObject;
 import de.unihamburg.informatik.nlp4web.tutorial.tut5.writer.OnlineResultWriter;
-import org.apache.uima.UIMAException;
-import org.cleartk.ml.jar.GenericJarClassifierFactory;
-
-import java.io.File;
-import java.io.IOException;
-
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-import static org.apache.uima.fit.factory.CollectionReaderFactory.createReader;
-import static org.apache.uima.fit.pipeline.SimplePipeline.runPipeline;
-import static spark.Spark.*;
-import static spark.Spark.post;
 
 public class ExecuteOnlineFakeNewsIdentification {
 
@@ -32,7 +37,7 @@ public class ExecuteOnlineFakeNewsIdentification {
                         DBAnnotator.PARAM_STOP_WORDS, stopwordsFile),
             	/*createEngine(AnnotationWriter.class,
     				AnnotationWriter.PARAM_DBVIEW, "DB-VIEW"),*/
-                createEngine(FeatureAnnotator.class,
+                createEngine(FeatureAnnotator.class, 
                         FeatureAnnotator.PARAM_IS_TRAINING, false,
                         FeatureAnnotator.PARAM_DIRECTORY_NAME, modelDirectory,
                         FeatureAnnotator.PARAM_TF_IDF_URI,
@@ -41,7 +46,7 @@ public class ExecuteOnlineFakeNewsIdentification {
                         FeatureAnnotator.createIdfCentroidSimilarityDataURI(modelDirectory),
                         FeatureAnnotator.PARAM_MINMAX_URI,
                         FeatureAnnotator.createMinMaxDataURI(modelDirectory),
-                        GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "/model.jar"),
+                        GenericJarClassifierFactory.PARAM_CLASSIFIER_JAR_PATH, modelDirectory + "/online-model.jar"),
                 createEngine(OnlineResultWriter.class)
         );
     }

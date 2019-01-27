@@ -109,18 +109,18 @@ public class FeatureAnnotator extends CleartkAnnotator<String> {
 
             CombinedExtractor1 combinedExtractor1 = new CombinedExtractor1<FakeNewsAnnotation>(
                     tfIdfExtractor,
-                    //simExtractor,
-                    //minmaxExtractor,
+                    simExtractor,
+                    minmaxExtractor,
                     capsFunction,
                     uniqueWordsFunction,
                     exclamationMarkCount,
-                    newsLength,
-					averageTokenLength,
-					maxTokenLength
+//                    newsLength,
+//					averageTokenLength,
+//					maxTokenLength
             
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "id"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
-                    //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount"),
+                    new TypePathExtractor<>(FakeNewsAnnotation.class, "source"),
+                    new TypePathExtractor<>(FakeNewsAnnotation.class, "shareCount")
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "shareUserCount")
                     //new TypePathExtractor<>(FakeNewsAnnotation.class, "maxUserShareCount")
             );
